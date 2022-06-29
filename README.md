@@ -1,2 +1,2 @@
-# Podobayka 🔥
-Monorepo to combine all the bots that streamers may need
+# Podobayka
+Monorepo to combine the bots that streamers may need
