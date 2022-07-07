@@ -2,6 +2,7 @@
   "folders": [
     { "name": "root", "path": "../" },
     { "name": "discord-timer", "path": "../packages/discord-timer" },
+    { "name": "twitch-sirenachan", "path": "../packages/twitch-sirenachan" },
     { "name": "twitch-chat-lurkers", "path": "../packages/twitch-chat-lurkers" },
   ],
   "settings": {}
