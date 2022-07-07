@@ -3,18 +3,29 @@ import discord, { Intents } from 'discord.js';
 
 dotenv.config();
 
-if (!process.env.DISCORD_BOT_TOKEN) {
-  throw new Error('No bot token found!');
+const tokens = [
+  process.env.DISCORD_PODOBAYKA_TOKEN,
+  process.env.DISCORD_SIRENACHAN_TOKEN,
+  process.env.DISCORD_NEONBONBON_TOKEN,
+  process.env.DISCORD_SOOONYAN_TOKEN,
+  process.env.DISCORD_WANESSATOXIC_TOKEN,
+  process.env.DISCORD_ALYSQUE_TOKEN
+];
+
+if (tokens.some((token) => !token)) {
+  throw new Error('Not all discord tokens are set');
 }
 
-const client = new discord.Client({
-  intents: [Intents.FLAGS.GUILDS],
-  partials: ['CHANNEL']
-});
+for (const token of tokens) {
+  const bot = new discord.Client({
+    intents: [Intents.FLAGS.GUILDS],
+    partials: ['CHANNEL']
+  });
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user?.tag}!`);
-});
+  bot.on('ready', () => {
+    console.log(`Logged in as ${bot.user?.tag}!`);
+  });
 
-// Wake the f..., Samurai 🤖
-client.login(process.env.DISCORD_BOT_TOKEN);
+  // WAKE UP, Samurai 🤖
+  bot.login(token);
+}
