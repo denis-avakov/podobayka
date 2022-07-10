@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import cron from 'node-cron';
+
 import auth from 'auth';
 import directoryLoader from 'utils/directoryLoader';
 import saveUser from 'utils/saveUser';
@@ -17,12 +18,7 @@ async function main() {
   console.log('Loading timers...');
 
   sirenachanBot.onJoin((channel) => {
-    for (const timer of timers) {
-      cron.schedule(timer.cron, () => {
-        const response = timer.run();
-        sirenachanBot.say(channel, response);
-      });
-    }
+    console.log('🔥');
   });
 
   sirenachanBot.onMessage((channel, user, userMessage) => {
@@ -37,6 +33,13 @@ async function main() {
     }
 
     saveUser(user);
+  });
+
+  let currentTimer = 0;
+  cron.schedule('*/15 * * * *', () => {
+    currentTimer = (currentTimer + 1) % timers.length;
+    const response = timers[currentTimer].run();
+    sirenachanBot.say('sirena_chan', response);
   });
 
   const giftCounts = new Map<string | undefined, number>();
