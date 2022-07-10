@@ -18,6 +18,7 @@ export default function auth() {
 
   return new ChatClient({
     authProvider,
-    channels: ['sirena_chan']
+    channels: ['sirena_chan'],
+    isAlwaysMod: true
   });
 }
