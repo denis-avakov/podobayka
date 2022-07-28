@@ -4,13 +4,12 @@ export default {
   triggers: ['!ball'],
   run: (user: string, message?: string) => {
     return sample([
-      'Моя відповідь — ТЯ! peepoSwing',
-      'Мої чіпочакри вагаються. Loading...',
-      'Ніт RoflanPominki',
-      'Чел ты... А почему рот в вопросе? roflanEbalo',
-      'Так, неодмінно! LennyFace',
-      'Ні. Нуль допомоги, крч peepoRun',
-      'Так, чуваче, це соляра! Pogey'
+      'Моя відповідь — ТЯ! AlienPls3',
+      'Мої чіпочакри вагаються. Спобуйте пізніше.',
+      'Ніт SillyCat ',
+      'Так, неодмінно! rainbowPls',
+      'Ні. Нуль допомоги, крч monkaStop',
+      'Так, чуваче, це соляра! British'
     ]);
   }
 };

@@ -9,10 +9,10 @@ export default {
     if (user.toLowerCase() === randomUser.toLowerCase()) {
       return sample([
         `Сам себе не обіймеш — ніхто не обійме. Ану іди сюдиии catBlush `,
-        `Чел, а чому рот в ЧСВ? peepoFat`
+        `Чіл, а чому рот в ЧСВ? peepoFat`
       ]);
     }
 
-    return `BearHug ${user} робить ${random(1, 100)} обійняв+підняв для ${randomUser}! BearHug`;
+    return `BearHug ${user} робить ${random(1, 100)} обіймашок ${randomUser}! BearHug`;
   }
 };

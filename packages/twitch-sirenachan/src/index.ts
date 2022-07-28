@@ -45,15 +45,16 @@ async function main() {
   const giftCounts = new Map<string | undefined, number>();
 
   sirenachanBot.onSub((channel, user) => {
-    const message = `Thanks to @${user} for subscribing to the channel!`;
+    const message = `@${user}, дякую, дуже дякую за підписку 💜`;
     sirenachanBot.say(channel, message);
   });
 
   sirenachanBot.onResub((channel, user, subInfo) => {
-    const message = `Thanks to @${user} for subscribing to the channel for a total of ${subInfo.months} months!`;
+    const message = `@${user}, дякую за підписку на канал впродовж ${subInfo.months} місяців. Ти топ! 💜`;
     sirenachanBot.say(channel, message);
   });
 
+  /*
   sirenachanBot.onSubGift((channel, recipient, subInfo) => {
     const user = subInfo.gifter;
     const previousGiftCount = giftCounts.get(user) ?? 0;
@@ -64,10 +65,11 @@ async function main() {
       sirenachanBot.say(channel, `Thanks ${user} for gifting a sub to ${recipient}!`);
     }
   });
+*/
 
   sirenachanBot.onCommunitySub((channel, user, subInfo) => {
     const previousGiftCount = giftCounts.get(user) ?? 0;
-    const message = `Thanks ${user} for gifting ${subInfo.count} subs to the community!`;
+    const message = `Ував увавчики, дякую ${user} за ${subInfo.count} подарованих підписок. Цьом в носик 💜`;
 
     giftCounts.set(user, previousGiftCount + subInfo.count);
     sirenachanBot.say(channel, message);
