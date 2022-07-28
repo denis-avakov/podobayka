@@ -36,7 +36,7 @@ async function main() {
   });
 
   let currentTimer = 0;
-  cron.schedule('*/15 * * * *', () => {
+  cron.schedule('*/5 * * * *', () => {
     currentTimer = (currentTimer + 1) % timers.length;
     const response = timers[currentTimer].run();
     sirenachanBot.say('sirena_chan', response);

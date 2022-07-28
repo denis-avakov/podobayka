@@ -5,8 +5,9 @@
     "dev": "nodemon -e ts -x \"cls && ts-node\" src/index.ts"
   },
   "dependencies": {
-    "@twurple/auth": "^5.1.6",
+    "@twurple/auth": "^5.1.7",
     "@twurple/chat": "^5.1.6",
+    "@twurple/pubsub": "^5.1.7",
     "dotenv": "^16.0.1",
     "lodash": "^4.17.21",
     "node-cron": "^3.0.1",
