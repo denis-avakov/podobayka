@@ -1,12 +1,11 @@
-import { RefreshingAuthProvider } from '@twurple/auth';
+import { RefreshingAuthProvider, ClientCredentialsAuthProvider } from '@twurple/auth';
+import { ApiClient } from '@twurple/api';
 import { ChatClient } from '@twurple/chat';
+import { EventSubListener } from '@twurple/eventsub';
+import { NgrokAdapter } from '@twurple/eventsub-ngrok';
 import storage from 'utils/storage';
 
-export default async function auth() {
-  if (!process.env.TWITCH_CLIENT_ID || !process.env.TWITCH_CLIENT_SECRET) {
-    throw new Error('TWITCH_CLIENT_ID and TWITCH_CLIENT_SECRET must be set');
-  }
-
+async function chatClient() {
   const authProvider = new RefreshingAuthProvider(
     {
       clientId: process.env.TWITCH_CLIENT_ID as string,
@@ -22,3 +21,27 @@ export default async function auth() {
     isAlwaysMod: true
   });
 }
+
+async function eventSub() {
+  const authProvider = new ClientCredentialsAuthProvider(
+    process.env.TWITCH_CLIENT_ID as string,
+    process.env.TWITCH_CLIENT_SECRET as string
+  );
+  const apiClient = new ApiClient({ authProvider });
+
+  // This is necessary to prevent conflict errors resulting
+  // from ngrok assigning a new host name every time
+  await apiClient.eventSub.deleteAllSubscriptions();
+
+  return new EventSubListener({
+    apiClient,
+    adapter: new NgrokAdapter(),
+    secret: 'DxNP9hf8nhn66Jf6',
+    strictHostCheck: true
+  });
+}
+
+export default {
+  chatClient,
+  eventSub
+};

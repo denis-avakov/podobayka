@@ -5,8 +5,11 @@
     "dev": "nodemon -e ts -x \"cls && ts-node\" src/index.ts"
   },
   "dependencies": {
+    "@twurple/api": "^5.1.8",
     "@twurple/auth": "^5.1.8",
     "@twurple/chat": "^5.1.8",
+    "@twurple/eventsub": "^5.1.8",
+    "@twurple/eventsub-ngrok": "^5.1.8",
     "dotenv": "^16.0.1",
     "lodash": "^4.17.21",
     "node-cron": "^3.0.1",
