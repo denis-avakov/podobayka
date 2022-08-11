@@ -9,6 +9,6 @@ export default {
       return 'Найс ЧСВ peepoFat';
     }
 
-    return `APPLE Біжу повідоміти чатику, що ${randomUser} НАЙСУ! APPLE`;
+    return `APPLE Біжу повідоміти чатику, що ${randomUser} найс! APPLE`;
   }
 };

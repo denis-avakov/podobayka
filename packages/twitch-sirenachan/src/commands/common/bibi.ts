@@ -7,35 +7,35 @@ export default {
 
     if (0 === bibaLength) {
       return sample([
-        `0 (НУЛЬ) см. ${user}, чел, скажи паляниця Kappa`,
-        `${user}, у тебе немає песюна! Hahaa`
+        `${user}, песюн 0 (НУЛЬ) см. monkaW`,
+        `${user}, у тебе немає песюна! pepePoint`
       ]);
     }
 
     if (10 >= bibaLength) {
       return sample([
-        `Ого, у ${user} гвинтик ${bibaLength} см FeelsGoodEnoughMan`,
-        `${user} бібібі ${bibaLength} см Smoge`
+        `Ого, у ${user} гвинтик ${bibaLength} см peepoGiggles`,
+        `${user} бібібі ${bibaLength} см maaaaan`
       ]);
     }
 
     if (16 >= bibaLength) {
       return sample([
-        `${user}, твій містер бібі ${bibaLength} см roflanEbalo`,
-        `У ${user} бебрик ${bibaLength} см. Ммм а пахне як! peepoSwing`
+        `${user}, твій містер бібі ${bibaLength} см PepoG`,
+        `У ${user} бебрик ${bibaLength} см. Ммм, а пахне як! YAPPP`
       ]);
     }
 
     if (25 >= bibaLength) {
       return sample([
-        `Хіхі, а ${user} має бібу ${bibaLength} см catFlustered`,
-        `Ого, ого у ${user} ${bibaLength} см. Моя повага LickMe`
+        `Хіхі, а ${user} має бібу ${bibaLength} см Awkward`,
+        `Ого, ого у ${user} ${bibaLength} см. Моя повага peepoRasp`
       ]);
     }
 
     return sample([
-      `УВАГА! ${user} має ${bibaLength} см. Ти шо, бібозавр? Pogey`,
-      `${user} твій бабрище аж ${bibaLength} см! monkaChrist`
+      `УВАГА! ${user} має ${bibaLength} см. Ти шо, бібозавр? Binoculous`,
+      `${user} твій бабрище аж ${bibaLength} см! ReallyMad`
     ]);
   }
 };

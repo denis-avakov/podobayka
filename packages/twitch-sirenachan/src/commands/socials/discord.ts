@@ -1,7 +1,7 @@
 import { sample } from 'lodash';
 
 export default {
-  triggers: ['!discord', '!ds', '!dis', '!дис'],
+  triggers: ['!discord', '!ds', '!dis', '!діс'],
   run: (user: string, message?: string) => {
     if (user === 'den3er') {
       return sample([
