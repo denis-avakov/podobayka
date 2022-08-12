@@ -22,6 +22,15 @@ async function main() {
   const timers = await directoryLoader('./src/timers/**/*.ts');
   console.log('Loading timers...');
 
+  await sirenachanBot.onRegister(async () => {
+    const mods = await sirenachanBot.getMods(CHANNEL.name);
+    console.log('Mods:', mods);
+  });
+
+  await sirenachanBot.onWhisper((user, message) => {
+    console.log(user, message);
+  });
+
   await sirenachanBot.onConnect(() => {
     console.log('🔥');
   });
@@ -112,20 +121,20 @@ async function main() {
   //   sirenachanBot.say(CHANNEL.name, response);
   // });
 
-  // await eventSubListener.subscribeToChannelRaidEventsFrom(CHANNEL.id, (event) => {
-  //   const response = `${event.raidingBroadcasterDisplayName} going to raid!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
+  await eventSubListener.subscribeToChannelRaidEventsFrom(CHANNEL.id, (event) => {
+    const response = `${event.raidingBroadcasterDisplayName} going to raid!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
 
-  // await eventSubListener.subscribeToChannelRaidEventsTo(CHANNEL.id, (event) => {
-  //   const response = `${event.raidedBroadcasterDisplayName} just raided!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
+  await eventSubListener.subscribeToChannelRaidEventsTo(CHANNEL.id, (event) => {
+    const response = `${event.raidedBroadcasterDisplayName} just raided!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
 
-  // await eventSubListener.subscribeToChannelRedemptionAddEvents(CHANNEL.id, (event) => {
-  //   const response = `${event.userDisplayName} just added a redemption!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
+  await eventSubListener.subscribeToChannelRedemptionAddEvents(CHANNEL.id, (event) => {
+    const response = `${event.userDisplayName} just added a redemption!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
 
   // await eventSubListener.subscribeToChannelSubscriptionEvents(CHANNEL.id, (event) => {
   //   const response = `@${event.userDisplayName}, дякую, дуже дякую за підписку 💜`;
@@ -142,15 +151,15 @@ async function main() {
   //   sirenachanBot.say(CHANNEL.name, response);
   // });
 
-  // await eventSubListener.subscribeToStreamOfflineEvents(CHANNEL.id, (event) => {
-  //   const response = `${event.broadcasterDisplayName} just went offline!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
+  await eventSubListener.subscribeToStreamOfflineEvents(CHANNEL.id, (event) => {
+    const response = `${event.broadcasterDisplayName} just went offline!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
 
-  // await eventSubListener.subscribeToStreamOnlineEvents(CHANNEL.id, (event) => {
-  //   const response = `${event.broadcasterDisplayName} just came online!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
+  await eventSubListener.subscribeToStreamOnlineEvents(CHANNEL.id, (event) => {
+    const response = `${event.broadcasterDisplayName} just came online!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
 
   await sirenachanBot.connect();
   await eventSubListener.listen();
