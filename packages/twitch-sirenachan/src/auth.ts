@@ -5,14 +5,14 @@ import { EventSubListener } from '@twurple/eventsub';
 import { NgrokAdapter } from '@twurple/eventsub-ngrok';
 import storage from 'utils/storage';
 
-async function chatClient() {
+async function getChatClient() {
   const authProvider = new RefreshingAuthProvider(
     {
       clientId: process.env.TWITCH_CLIENT_ID as string,
       clientSecret: process.env.TWITCH_CLIENT_SECRET as string,
       onRefresh: async (newTokenData) => storage.push('/token', newTokenData)
     },
-    storage.getData('/token')
+    await storage.getData('/token')
   );
 
   return new ChatClient({
@@ -22,7 +22,7 @@ async function chatClient() {
   });
 }
 
-async function eventSub() {
+async function getEventSubListener() {
   const authProvider = new ClientCredentialsAuthProvider(
     process.env.TWITCH_CLIENT_ID as string,
     process.env.TWITCH_CLIENT_SECRET as string
@@ -42,6 +42,6 @@ async function eventSub() {
 }
 
 export default {
-  chatClient,
-  eventSub
+  getChatClient,
+  getEventSubListener
 };
