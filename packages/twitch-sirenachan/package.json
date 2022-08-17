@@ -2,9 +2,12 @@
   "private": true,
   "scripts": {
     "start": "ts-node ./src/index.ts",
-    "dev": "nodemon -e ts -x \"cls && ts-node\" src/index.ts"
+    "dev": "nodemon -e ts -x \"cls && ts-node\" src/index.ts",
+    "push": "npx prisma db push",
+    "studio": "npx prisma studio"
   },
   "dependencies": {
+    "@prisma/client": "^4.2.1",
     "@twurple/api": "^5.2.1",
     "@twurple/auth": "^5.2.1",
     "@twurple/chat": "^5.2.1",
@@ -13,9 +16,7 @@
     "dotenv": "^16.0.1",
     "lodash": "^4.17.21",
     "node-cron": "^3.0.1",
-    "node-json-db": "^2.1.0",
-    "tiny-glob": "^0.2.9",
-    "uuid": "^8.3.2"
+    "tiny-glob": "^0.2.9"
   },
   "devDependencies": {
     "@swc/core": "^1.2.231",
@@ -30,6 +31,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^2.0.19",
     "prettier": "^2.7.1",
+    "prisma": "^4.2.1",
     "regenerator-runtime": "^0.13.9",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.0",

@@ -1,14 +1,14 @@
-import getRandomUser from 'utils/getRandomUser';
+import chatter from 'api/chatter';
 
 export default {
   triggers: ['!nice'],
-  run: (user: string, message?: string) => {
-    const randomUser = getRandomUser();
+  run: async (user: string) => {
+    const randomChatter = await chatter.pickRandom();
 
-    if (user.toLowerCase() === randomUser.toLowerCase()) {
+    if (user.toLowerCase() === randomChatter.userName) {
       return 'Найс ЧСВ peepoFat';
     }
 
-    return `APPLE Біжу повідоміти чатику, що ${randomUser} найс! APPLE`;
+    return `APPLE Біжу повідоміти чатику, що ${randomChatter.userName} найс! APPLE`;
   }
 };

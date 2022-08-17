@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+model TwitchToken {
+  /// The unique identifier for the token
+  id Int @id @default(autoincrement())
+
+  /// The user for whom the token was created
+  name String
+
+  /// The access token which is necessary for every request to the Twitch API
+  accessToken String
+
+  /// The time, in seconds from the obtainment date, when the access token expires
+  expiresIn Int?
+
+  /// The date when the token was obtained, in epoch milliseconds
+  obtainmentTimestamp BigInt
+
+  /// The refresh token which is necessary to refresh the access token once it expires
+  refreshToken String?
+
+  /// The scope the access token is valid for, i.e. what the token enables you to do
+  /// https://dev.twitch.tv/docs/authentication/scopes
+  scope String
+}
+
+model Chatter {
+  /// The unique identifier for the chatter
+  id String @id @default(cuid())
+
+  /// The ID of the channel the chatter is in
+  channelId String?
+
+  /// The ID of the user
+  userId String @unique
+
+  /// The name of the user
+  userName String
+
+  /// The user's messages
+  messages Message[]
+}
+
+model Message {
+  /// The unique identifier for the message
+  id String @id @default(cuid())
+
+  chatterId String
+
+  /// The time the message was sent, in epoch milliseconds
+  createdAt DateTime @default(now())
+
+  /// The ID of the message
+  messageId String @unique
+
+  /// The message text
+  message String
+
+  /// The ID of the chatter the message was sent from
+  chatter Chatter @relation(fields: [chatterId], references: [id], onDelete: Cascade)
+}

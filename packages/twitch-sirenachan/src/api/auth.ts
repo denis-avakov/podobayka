@@ -3,21 +3,55 @@ import { ApiClient } from '@twurple/api';
 import { ChatClient } from '@twurple/chat';
 import { EventSubListener } from '@twurple/eventsub';
 import { NgrokAdapter } from '@twurple/eventsub-ngrok';
-import storage from 'utils/storage';
+import { prisma } from 'utils/database';
+import { CHANNEL } from 'utils/vars';
 
 async function getChatClient() {
+  const currentTokenData = await prisma.twitchToken.findFirst({
+    where: {
+      name: CHANNEL.name
+    }
+  });
+
+  if (!currentTokenData) {
+    throw new Error('No connection to the database');
+  }
+
   const authProvider = new RefreshingAuthProvider(
     {
       clientId: process.env.TWITCH_CLIENT_ID as string,
       clientSecret: process.env.TWITCH_CLIENT_SECRET as string,
-      onRefresh: async (newTokenData) => storage.push('/token', newTokenData)
+      onRefresh: async (newTokenData) => {
+        if (!newTokenData.refreshToken || !newTokenData.expiresIn) {
+          throw new Error('Invalid refreshed token data');
+        }
+
+        await prisma.twitchToken.update({
+          where: {
+            id: currentTokenData.id
+          },
+          data: {
+            accessToken: newTokenData.accessToken,
+            expiresIn: newTokenData.expiresIn,
+            obtainmentTimestamp: newTokenData.obtainmentTimestamp,
+            refreshToken: newTokenData.refreshToken,
+            scope: JSON.stringify(newTokenData.scope)
+          }
+        });
+      }
     },
-    await storage.getData('/token')
+    {
+      accessToken: currentTokenData.accessToken,
+      expiresIn: currentTokenData.expiresIn,
+      obtainmentTimestamp: Number(currentTokenData.obtainmentTimestamp),
+      refreshToken: currentTokenData.refreshToken,
+      scope: JSON.parse(currentTokenData.scope)
+    }
   );
 
   return new ChatClient({
     authProvider,
-    channels: ['sirena_chan'],
+    channels: [CHANNEL.name],
     isAlwaysMod: true
   });
 }

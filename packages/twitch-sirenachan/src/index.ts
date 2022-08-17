@@ -1,9 +1,10 @@
 import dotenv from 'dotenv';
 import cron from 'node-cron';
 
-import auth from 'auth';
+import auth from 'api/auth';
+import chatter from 'api/chatter';
+import checkTriggers from 'utils/checkTriggers';
 import directoryLoader from 'utils/directoryLoader';
-import saveUser from 'utils/saveUser';
 import { CHANNEL } from 'utils/vars';
 
 dotenv.config();
@@ -35,18 +36,30 @@ async function main() {
     console.log('🔥');
   });
 
-  sirenachanBot.onMessage((channel, user, userMessage) => {
+  sirenachanBot.onMessage(async (channel, user, userMessage, msg) => {
     const userMessageText = userMessage.toLocaleLowerCase().trim();
+
+    await chatter.store({
+      channelId: msg.channelId,
+      messageId: msg.id,
+      userId: msg.userInfo.userId,
+      userName: msg.userInfo.userName,
+      message: userMessageText
+    });
+
+    if (checkTriggers.some(userMessageText, ['ё', 'ъ', 'ы', 'э'])) {
+      sirenachanBot.deleteMessage(channel, msg.id);
+      sirenachanBot.say(channel, `${user}, не пиши російською у чаті ReallyMad`);
+      return;
+    }
 
     for (const command of commands) {
       if (command.triggers.includes(userMessageText)) {
-        const response = command.run(user, userMessage);
+        const response = await command.run(user, userMessage);
         sirenachanBot.say(channel, response);
         return;
       }
     }
-
-    saveUser(user);
   });
 
   let currentTimer = 0;
