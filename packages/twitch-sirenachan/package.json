@@ -13,6 +13,8 @@
     "@twurple/chat": "^5.2.1",
     "@twurple/eventsub": "^5.2.1",
     "@twurple/eventsub-ngrok": "^5.2.1",
+    "@types/convert-layout": "^0.5.1",
+    "convert-layout": "^0.11.1",
     "dotenv": "^16.0.1",
     "lodash": "^4.17.21",
     "node-cron": "^3.0.1"

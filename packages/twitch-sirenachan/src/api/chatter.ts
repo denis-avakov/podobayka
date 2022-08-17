@@ -57,7 +57,27 @@ async function pickRandom(): Promise<{ userName: string }> {
   };
 }
 
+async function getPreviousMessage(userId: string) {
+  const messages = await prisma.chatter.findFirst({
+    where: {
+      userId
+    },
+    select: {
+      messages: {
+        orderBy: {
+          createdAt: 'desc'
+        },
+        skip: 1,
+        take: 1
+      }
+    }
+  });
+
+  return messages?.messages[0].message;
+}
+
 export default {
   store,
-  pickRandom
+  pickRandom,
+  getPreviousMessage
 };

@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import cron from 'node-cron';
+import convertLayout from 'convert-layout/uk';
 
 import auth from 'api/auth';
 import chatter from 'api/chatter';
@@ -51,6 +52,17 @@ async function main() {
       sirenachanBot.deleteMessage(channel, msg.id);
       sirenachanBot.say(channel, `${user}, не пиши російською у чаті ReallyMad`);
       return;
+    }
+
+    if (checkTriggers.some(userMessageText, ['!ой', '!ops', '~'])) {
+      const previousMessage = await chatter.getPreviousMessage(msg.userInfo.userId);
+
+      if (previousMessage) {
+        const text = convertLayout.fromEn(previousMessage);
+        sirenachanBot.say(channel, `${user}, сказав: ${text}`);
+      } else {
+        sirenachanBot.say(channel, `${user}, не можу знайти попереднє повідомлення`);
+      }
     }
 
     for (const command of commands) {
