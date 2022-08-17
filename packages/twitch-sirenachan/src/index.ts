@@ -17,10 +17,10 @@ async function main() {
   const sirenachanBot = await auth.getChatClient();
   const eventSubListener = await auth.getEventSubListener();
 
-  const commands = await directoryLoader('./src/commands/**/*.ts');
+  const commands = await directoryLoader('../commands');
   console.log('Loading commands...');
 
-  const timers = await directoryLoader('./src/timers/**/*.ts');
+  const timers = await directoryLoader('../timers');
   console.log('Loading timers...');
 
   await sirenachanBot.onRegister(async () => {

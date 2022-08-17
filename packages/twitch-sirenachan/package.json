@@ -15,8 +15,7 @@
     "@twurple/eventsub-ngrok": "^5.2.1",
     "dotenv": "^16.0.1",
     "lodash": "^4.17.21",
-    "node-cron": "^3.0.1",
-    "tiny-glob": "^0.2.9"
+    "node-cron": "^3.0.1"
   },
   "devDependencies": {
     "@swc/core": "^1.2.231",
