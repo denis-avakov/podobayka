@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import cron from 'node-cron';
 import convertLayout from 'convert-layout/uk';
 
-import auth from 'api/auth';
+import initAuth from 'api/auth';
 import chatter from 'api/chatter';
 import checkTriggers from 'utils/checkTriggers';
 import directoryLoader from 'utils/directoryLoader';
@@ -11,12 +11,7 @@ import { CHANNEL } from 'utils/vars';
 dotenv.config();
 
 async function main() {
-  if (!process.env.TWITCH_CLIENT_ID || !process.env.TWITCH_CLIENT_SECRET) {
-    throw new Error('TWITCH_CLIENT_ID and TWITCH_CLIENT_SECRET must be set');
-  }
-
-  const sirenachanBot = await auth.getChatClient();
-  const eventSubListener = await auth.getEventSubListener();
+  const { apiClient, chatClient: sirenachanBot, eventSubListener } = await initAuth();
 
   const commands = await directoryLoader('src/commands/**/*.ts');
   console.log('Loading commands...', commands.length);
@@ -38,6 +33,11 @@ async function main() {
   });
 
   sirenachanBot.onMessage(async (channel, user, userMessage, msg) => {
+    // do nothing if the message is from the bot
+    if (user === sirenachanBot.currentNick) {
+      return;
+    }
+
     const userMessageText = userMessage.toLocaleLowerCase().trim();
 
     if (checkTriggers.some(userMessageText, ['ё', 'ъ', 'ы', 'э'])) {
@@ -82,15 +82,13 @@ async function main() {
   });
 
   let cursorTimer = 0;
-  const tasks = cron.schedule(
-    '*/5 * * * *',
-    () => {
+  cron.schedule('*/5 * * * *', async () => {
+    if (await apiClient.streams.getStreamByUserId(CHANNEL.id)) {
       cursorTimer = (cursorTimer + 1) % timers.length;
       const response = timers[cursorTimer].run();
       sirenachanBot.say(CHANNEL.name, response);
-    },
-    { scheduled: false }
-  );
+    }
+  });
 
   // await eventSubListener.subscribeToChannelCheerEvents(CHANNEL.id, (event) => {
   //   const response = `${event.userDisplayName} just cheered ${event.bits} bits!`;
@@ -190,15 +188,11 @@ async function main() {
   await eventSubListener.subscribeToStreamOfflineEvents(CHANNEL.id, (event) => {
     const response = `${event.broadcasterDisplayName} just went offline!`;
     sirenachanBot.say(CHANNEL.name, response);
-
-    tasks.stop();
   });
 
   await eventSubListener.subscribeToStreamOnlineEvents(CHANNEL.id, (event) => {
     const response = `${event.broadcasterDisplayName} just came online!`;
     sirenachanBot.say(CHANNEL.name, response);
-
-    tasks.start();
   });
 
   await sirenachanBot.connect();

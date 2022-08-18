@@ -1,12 +1,13 @@
-import { RefreshingAuthProvider, ClientCredentialsAuthProvider } from '@twurple/auth';
-import { ApiClient } from '@twurple/api';
+import { RefreshingAuthProvider } from '@twurple/auth';
 import { ChatClient } from '@twurple/chat';
-import { EventSubListener } from '@twurple/eventsub';
-import { NgrokAdapter } from '@twurple/eventsub-ngrok';
 import { prisma } from 'utils/database';
 import { CHANNEL } from 'utils/vars';
 
-async function getChatClient() {
+export default async function createChatClient() {
+  if (!process.env.TWITCH_CLIENT_ID || !process.env.TWITCH_CLIENT_SECRET) {
+    throw new Error('Missing TWITCH_CLIENT_ID or TWITCH_CLIENT_SECRET environment variables');
+  }
+
   const currentTokenData = await prisma.twitchToken.findFirst({
     where: {
       name: CHANNEL.name
@@ -14,13 +15,13 @@ async function getChatClient() {
   });
 
   if (!currentTokenData) {
-    throw new Error('No connection to the database');
+    throw new Error('Missing Twitch token in database');
   }
 
   const authProvider = new RefreshingAuthProvider(
     {
-      clientId: process.env.TWITCH_CLIENT_ID as string,
-      clientSecret: process.env.TWITCH_CLIENT_SECRET as string,
+      clientId: process.env.TWITCH_CLIENT_ID,
+      clientSecret: process.env.TWITCH_CLIENT_SECRET,
       onRefresh: async (newTokenData) => {
         if (!newTokenData.refreshToken || !newTokenData.expiresIn) {
           throw new Error('Invalid refreshed token data');
@@ -51,31 +52,7 @@ async function getChatClient() {
 
   return new ChatClient({
     authProvider,
-    channels: [CHANNEL.name],
+    channels: [currentTokenData.name],
     isAlwaysMod: true
   });
 }
-
-async function getEventSubListener() {
-  const authProvider = new ClientCredentialsAuthProvider(
-    process.env.TWITCH_CLIENT_ID as string,
-    process.env.TWITCH_CLIENT_SECRET as string
-  );
-  const apiClient = new ApiClient({ authProvider });
-
-  // This is necessary to prevent conflict errors resulting
-  // from ngrok assigning a new host name every time
-  await apiClient.eventSub.deleteAllSubscriptions();
-
-  return new EventSubListener({
-    apiClient,
-    adapter: new NgrokAdapter(),
-    secret: 'DxNP9hf8nhn66Jf6',
-    strictHostCheck: true
-  });
-}
-
-export default {
-  getChatClient,
-  getEventSubListener
-};

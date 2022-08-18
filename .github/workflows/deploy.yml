@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - ${{env.working-directory}}/**
+      - packages/twitch-sirenachan/**
 
 jobs:
   deploy:
