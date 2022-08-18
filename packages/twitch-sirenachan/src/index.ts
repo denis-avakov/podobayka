@@ -75,11 +75,15 @@ async function main() {
   });
 
   let currentTimer = 0;
-  cron.schedule('*/5 * * * *', () => {
-    currentTimer = (currentTimer + 1) % timers.length;
-    const response = timers[currentTimer].run();
-    sirenachanBot.say(CHANNEL.name, response);
-  });
+  const tasks = cron.schedule(
+    '*/5 * * * *',
+    () => {
+      currentTimer = (currentTimer + 1) % timers.length;
+      const response = timers[currentTimer].run();
+      sirenachanBot.say(CHANNEL.name, response);
+    },
+    { scheduled: false }
+  );
 
   // await eventSubListener.subscribeToChannelCheerEvents(CHANNEL.id, (event) => {
   //   const response = `${event.userDisplayName} just cheered ${event.bits} bits!`;
@@ -179,11 +183,15 @@ async function main() {
   await eventSubListener.subscribeToStreamOfflineEvents(CHANNEL.id, (event) => {
     const response = `${event.broadcasterDisplayName} just went offline!`;
     sirenachanBot.say(CHANNEL.name, response);
+
+    tasks.stop();
   });
 
   await eventSubListener.subscribeToStreamOnlineEvents(CHANNEL.id, (event) => {
     const response = `${event.broadcasterDisplayName} just came online!`;
     sirenachanBot.say(CHANNEL.name, response);
+
+    tasks.start();
   });
 
   await sirenachanBot.connect();
