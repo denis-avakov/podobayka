@@ -1,18 +1,11 @@
-import fs from 'fs';
-import path from 'path';
+import glob from 'tiny-glob';
 
 export default async function directoryLoader(target: string) {
+  const paths = await glob(target, { absolute: true });
   const packages = [];
 
-  const packageFiles = fs
-    // Look for files as TS (dev) or JS (built files)
-    .readdirSync(path.resolve(__dirname, target))
-    .filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
-
-  for (const packageFile of packageFiles) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const feature = require(`${target}/${packageFile}`);
-    packages.push({ ...feature });
+  for (const path of paths) {
+    packages.push(require(path).default);
   }
 
   return packages;

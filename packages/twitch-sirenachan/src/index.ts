@@ -18,11 +18,11 @@ async function main() {
   const sirenachanBot = await auth.getChatClient();
   const eventSubListener = await auth.getEventSubListener();
 
-  const commands = await directoryLoader('../commands');
-  console.log('Loading commands...');
+  const commands = await directoryLoader('src/commands/**/*.ts');
+  console.log('Loading commands...', commands.length);
 
-  const timers = await directoryLoader('../timers');
-  console.log('Loading timers...');
+  const timers = await directoryLoader('src/timers/**/*.ts');
+  console.log('Loading timers...', timers.length);
 
   await sirenachanBot.onRegister(async () => {
     const mods = await sirenachanBot.getMods(CHANNEL.name);
@@ -74,12 +74,12 @@ async function main() {
     }
   });
 
-  let currentTimer = 0;
+  let cursorTimer = 0;
   const tasks = cron.schedule(
     '*/5 * * * *',
     () => {
-      currentTimer = (currentTimer + 1) % timers.length;
-      const response = timers[currentTimer].run();
+      cursorTimer = (cursorTimer + 1) % timers.length;
+      const response = timers[cursorTimer].run();
       sirenachanBot.say(CHANNEL.name, response);
     },
     { scheduled: false }
