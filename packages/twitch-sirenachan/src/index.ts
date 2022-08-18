@@ -40,16 +40,13 @@ async function main() {
   sirenachanBot.onMessage(async (channel, user, userMessage, msg) => {
     const userMessageText = userMessage.toLocaleLowerCase().trim();
 
-    await chatter.store({
-      channelId: msg.channelId,
-      messageId: msg.id,
-      userId: msg.userInfo.userId,
-      userName: msg.userInfo.userName,
-      message: userMessageText
-    });
-
     if (checkTriggers.some(userMessageText, ['ё', 'ъ', 'ы', 'э'])) {
-      sirenachanBot.deleteMessage(channel, msg.id);
+      try {
+        await sirenachanBot.deleteMessage(channel, msg.id);
+      } catch (error) {
+        console.log(`An error occurred while deleting the message of user ${user}:`, error);
+      }
+
       sirenachanBot.say(channel, `${user}, не пиши російською у чаті ReallyMad`);
       return;
     }
@@ -63,6 +60,8 @@ async function main() {
       } else {
         sirenachanBot.say(channel, `${user}, не можу знайти попереднє повідомлення`);
       }
+
+      return;
     }
 
     for (const command of commands) {
@@ -72,6 +71,14 @@ async function main() {
         return;
       }
     }
+
+    await chatter.store({
+      channelId: msg.channelId,
+      messageId: msg.id,
+      userId: msg.userInfo.userId,
+      userName: msg.userInfo.userName,
+      message: userMessageText
+    });
   });
 
   let cursorTimer = 0;
