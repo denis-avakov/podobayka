@@ -5,11 +5,13 @@ on:
     branches:
       - main
     paths:
-      - packages/twitch-sirenachan/**
+      - ${{env.working-directory}}/**
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      working-directory: packages/twitch-sirenachan
 
     steps:
       - name: Checkout
@@ -20,17 +22,17 @@ jobs:
         with:
           node-version: 16.x
           cache: npm
-          cache-dependency-path: packages/twitch-sirenachan/package-lock.json
+          cache-dependency-path: ${{env.working-directory}}/package-lock.json
 
       - name: Install packages
-        working-directory: packages/twitch-sirenachan
+        working-directory: ${{env.working-directory}}
         run: npm ci
 
       - name: Install Railway
         run: npm i -g @railway/cli
 
       - name: Deploy
-        working-directory: packages/twitch-sirenachan
+        working-directory: ${{env.working-directory}}
         run: railway up
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
