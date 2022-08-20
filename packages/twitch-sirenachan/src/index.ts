@@ -19,12 +19,17 @@ async function main() {
   const timers = await directoryLoader('src/timers/**/*.ts');
   console.log('Loading timers...', timers.length);
 
+  let mods: string[] = [];
   await sirenachanBot.onRegister(async () => {
-    const mods = await sirenachanBot.getMods(CHANNEL.name);
+    mods = await sirenachanBot.getMods(CHANNEL.name);
     console.log('Mods:', mods);
   });
 
   await sirenachanBot.onWhisper((user, message) => {
+    if ([...mods, CHANNEL.name].includes(user)) {
+      sirenachanBot.say(CHANNEL.name, message);
+    }
+
     console.log(user, message);
   });
 
