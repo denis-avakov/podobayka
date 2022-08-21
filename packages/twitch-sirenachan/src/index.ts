@@ -77,13 +77,17 @@ async function main() {
       }
     }
 
-    await chatter.store({
-      channelId: msg.channelId,
-      messageId: msg.id,
-      userId: msg.userInfo.userId,
-      userName: msg.userInfo.userName,
-      message: userMessageText
-    });
+    try {
+      await chatter.store({
+        channelId: msg.channelId,
+        messageId: msg.id,
+        userId: msg.userInfo.userId,
+        userName: msg.userInfo.userName,
+        message: userMessageText
+      });
+    } catch (error) {
+      console.log('An error occurred while storing the message:', error);
+    }
   });
 
   let cursorTimer = 0;
