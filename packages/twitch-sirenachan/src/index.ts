@@ -210,11 +210,15 @@ async function main() {
   await eventSubListener.subscribeToStreamOfflineEvents(CHANNEL.id, (event) => {
     const response = `${event.broadcasterDisplayName} just went offline!`;
     sirenachanBot.say(CHANNEL.name, response);
+
+    chatterList.clear();
   });
 
   await eventSubListener.subscribeToStreamOnlineEvents(CHANNEL.id, (event) => {
     const response = `${event.broadcasterDisplayName} just came online!`;
     sirenachanBot.say(CHANNEL.name, response);
+
+    chatterList.clear();
   });
 
   await sirenachanBot.connect();
