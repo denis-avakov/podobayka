@@ -5,9 +5,12 @@ import convertLayout from 'convert-layout/uk';
 import createApiClient from 'clients/apiClient';
 import createEventSubListener from 'clients/eventSubListener';
 import createChatClient from 'clients/chatClient';
+
 import twitchToken from 'models/twitchToken';
 import user from 'models/user';
+
 import chatterList from 'cache/chatterList';
+import moderatorList from 'cache/moderatorList';
 
 import checkTriggers from 'utils/checkTriggers';
 import directoryLoader from 'utils/directoryLoader';
@@ -34,14 +37,13 @@ async function main() {
   const timers = await directoryLoader('src/timers/**/*.ts');
   console.log('Loading timers...', timers.length);
 
-  let mods: string[] = [];
   await sirenachanBot.onRegister(async () => {
-    mods = await sirenachanBot.getMods(CHANNEL.name);
-    console.log('Mods:', mods);
+    const mods = await sirenachanBot.getMods(CHANNEL.name);
+    [...mods, CHANNEL.name].forEach((value) => moderatorList.set(value));
   });
 
   await sirenachanBot.onWhisper((user, message) => {
-    if ([...mods, CHANNEL.name].includes(user)) {
+    if (moderatorList.getList().includes(user)) {
       sirenachanBot.say(CHANNEL.name, message);
     }
 
