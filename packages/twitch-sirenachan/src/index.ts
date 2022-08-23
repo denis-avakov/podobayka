@@ -62,14 +62,6 @@ async function main() {
 
     const userMessageText = userMessage.toLocaleLowerCase().trim();
 
-    chatterList.set(msg.userInfo.userName, {
-      channelId: msg.channelId,
-      messageId: msg.id,
-      userId: msg.userInfo.userId,
-      userName: msg.userInfo.userName,
-      message: userMessageText
-    });
-
     if (checkTriggers.some(userMessageText, ['ё', 'ъ', 'ы', 'э'])) {
       try {
         await sirenachanBot.deleteMessage(channel, msg.id);
@@ -82,13 +74,13 @@ async function main() {
     }
 
     if (checkTriggers.some(userMessageText, ['!ой', '!ops', '~'])) {
-      const previousMessage = await chatterList.getPreviousMessage(msg.userInfo.userId);
+      const previousMessage = await chatterList.getPreviousMessage(msg.userInfo.userName);
 
       if (previousMessage) {
         const text = convertLayout.fromEn(previousMessage);
-        sirenachanBot.say(channel, `${user}, сказав: ${text}`);
+        sirenachanBot.say(channel, `@${user}, сказав: ${text}`);
       } else {
-        sirenachanBot.say(channel, `${user}, не можу знайти попереднє повідомлення`);
+        sirenachanBot.say(channel, `@${user}, не можу знайти попереднє повідомлення`);
       }
 
       return;
@@ -101,6 +93,14 @@ async function main() {
         return;
       }
     }
+
+    chatterList.set(msg.userInfo.userName, {
+      channelId: msg.channelId,
+      messageId: msg.id,
+      userId: msg.userInfo.userId,
+      userName: msg.userInfo.userName,
+      message: userMessageText
+    });
   });
 
   let cursorTimer = 0;
