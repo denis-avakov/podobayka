@@ -69,7 +69,7 @@ async function main() {
         console.log(`An error occurred while deleting the message of user ${user}:`, error);
       }
 
-      sirenachanBot.say(channel, `${user}, не пиши російською у чаті ReallyMad`);
+      sirenachanBot.say(channel, `@${user}, не пиши російською у чаті ReallyMad`);
       return;
     }
 
@@ -78,9 +78,9 @@ async function main() {
 
       if (previousMessage) {
         const text = convertLayout.fromEn(previousMessage);
-        sirenachanBot.say(channel, `@${user}, сказав: ${text}`);
+        sirenachanBot.say(channel, `${user}, сказав: ${text}`);
       } else {
-        sirenachanBot.say(channel, `@${user}, не можу знайти попереднє повідомлення`);
+        sirenachanBot.say(channel, `${user}, не можу знайти попереднє повідомлення`);
       }
 
       return;

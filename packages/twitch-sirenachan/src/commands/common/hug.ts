@@ -13,6 +13,6 @@ export default {
       ]);
     }
 
-    return `BearHug @${currentUser} робить ${random(1, 100)} обіймашок @${randomUserName}! BearHug`;
+    return `BearHug ${currentUser} робить ${random(1, 100)} обіймашок ${randomUserName}! BearHug`;
   }
 };
