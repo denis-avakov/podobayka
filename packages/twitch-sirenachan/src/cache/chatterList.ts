@@ -8,7 +8,7 @@ interface ChatterProps {
   message: string;
 }
 
-class ChatterStorage extends Map<string, ChatterProps> {
+class ChatterList extends Map<string, ChatterProps> {
   set(key: string, value: ChatterProps) {
     return super.set(key.toUpperCase(), value);
   }
@@ -43,5 +43,5 @@ class ChatterStorage extends Map<string, ChatterProps> {
   }
 }
 
-const chatterStorage = new ChatterStorage();
-export default chatterStorage;
+const chatterList = new ChatterList();
+export default chatterList;

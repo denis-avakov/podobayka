@@ -7,7 +7,7 @@ import createEventSubListener from 'clients/eventSubListener';
 import createChatClient from 'clients/chatClient';
 import twitchToken from 'models/twitchToken';
 import user from 'models/user';
-import chatter from 'cache/chatter';
+import chatterList from 'cache/chatterList';
 
 import checkTriggers from 'utils/checkTriggers';
 import directoryLoader from 'utils/directoryLoader';
@@ -60,7 +60,7 @@ async function main() {
 
     const userMessageText = userMessage.toLocaleLowerCase().trim();
 
-    chatter.set(msg.userInfo.userName, {
+    chatterList.set(msg.userInfo.userName, {
       channelId: msg.channelId,
       messageId: msg.id,
       userId: msg.userInfo.userId,
@@ -80,7 +80,7 @@ async function main() {
     }
 
     if (checkTriggers.some(userMessageText, ['!ой', '!ops', '~'])) {
-      const previousMessage = await chatter.getPreviousMessage(msg.userInfo.userId);
+      const previousMessage = await chatterList.getPreviousMessage(msg.userInfo.userId);
 
       if (previousMessage) {
         const text = convertLayout.fromEn(previousMessage);

@@ -1,10 +1,10 @@
 import { sample, random } from 'lodash';
-import chatter from 'cache/chatter';
+import chatterList from 'cache/chatterList';
 
 export default {
   triggers: ['!hug'],
   run: (currentUser: string) => {
-    const randomUserName = chatter.getRandomUserName();
+    const randomUserName = chatterList.getRandomUserName();
 
     if (!randomUserName || currentUser === randomUserName) {
       return sample([
