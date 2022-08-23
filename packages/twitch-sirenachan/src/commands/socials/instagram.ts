@@ -1,6 +1,6 @@
 export default {
   triggers: ['!instagram', '!inst', '!ig'],
-  run: (user: string, message?: string) => {
+  run: (user: string) => {
     return `${user} https://www.instagram.com/sirenachan`;
   }
 };

@@ -2,7 +2,7 @@ import { sample } from 'lodash';
 
 export default {
   triggers: ['!discord', '!ds', '!dis', '!діс'],
-  run: (user: string, message?: string) => {
+  run: (user: string) => {
     if (user === 'den3er') {
       return sample([
         '/announce шановні чілібосіки, чіли та пчілки, заходьте, будь ласка, в діскорд https://discord.gg/FgkgzzDRWJ',

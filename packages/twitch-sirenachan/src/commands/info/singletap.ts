@@ -1,6 +1,6 @@
 export default {
   triggers: ['!singletap', '!сінглтап'],
-  run: (user: string, message?: string) => {
+  run: (user: string) => {
     return `${user} я новенька в грі, знаю, що потрібно використовувати більше пальців, але мені зручніше сінглтапати. Я намагаюсь навчитись, але поки погано виходить SadgeCry`;
   }
 };

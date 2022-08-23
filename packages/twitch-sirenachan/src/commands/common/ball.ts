@@ -2,7 +2,7 @@ import { sample } from 'lodash';
 
 export default {
   triggers: ['!ball'],
-  run: (user: string, message?: string) => {
+  run: () => {
     return sample([
       'Моя відповідь — ТЯ! AlienPls3',
       'Мої чіпочакри вагаються. Спобуйте пізніше.',

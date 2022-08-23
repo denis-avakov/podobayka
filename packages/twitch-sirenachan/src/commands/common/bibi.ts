@@ -2,7 +2,7 @@ import { random, sample } from 'lodash';
 
 export default {
   triggers: ['!bibi', '!бібі'],
-  run: (user: string, message?: string) => {
+  run: (user: string) => {
     const bibaLength = random(0, 36);
 
     if (0 === bibaLength) {
