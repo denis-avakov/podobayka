@@ -2,16 +2,31 @@ import dotenv from 'dotenv';
 import cron from 'node-cron';
 import convertLayout from 'convert-layout/uk';
 
-import initAuth from 'api/auth';
+import createApiClient from 'clients/apiClient';
+import createEventSubListener from 'clients/eventSubListener';
+import createChatClient from 'clients/chatClient';
+import twitchToken from 'models/twitchToken';
+import user from 'models/user';
 import chatter from 'cache/chatter';
+
 import checkTriggers from 'utils/checkTriggers';
 import directoryLoader from 'utils/directoryLoader';
-import { CHANNEL } from 'utils/vars';
 
 dotenv.config();
 
 async function main() {
-  const { apiClient, chatClient: sirenachanBot, eventSubListener } = await initAuth();
+  const currentTwitchToken = await Promise.resolve()
+    .then(() => user.get('Sirenachan'))
+    .then((userProfile) => twitchToken.get(userProfile.id));
+
+  const apiClient = createApiClient();
+  const sirenachanBot = await createChatClient(currentTwitchToken);
+  const eventSubListener = await createEventSubListener(apiClient);
+
+  const CHANNEL = {
+    name: currentTwitchToken.userName,
+    id: currentTwitchToken.userId
+  };
 
   const commands = await directoryLoader('src/commands/**/*.ts');
   console.log('Loading commands...', commands.length);

@@ -12,12 +12,35 @@ generator client {
   previewFeatures = ["referentialIntegrity"]
 }
 
-model TwitchToken {
-  /// The unique identifier for the token
-  id Int @id @default(autoincrement())
+model User {
+  /// The unique identifier in the database
+  id String @id @default(cuid())
 
-  /// The user for whom the token was created
-  name String
+  /// The time the user was created, in epoch milliseconds
+  createdAt DateTime @default(now())
+
+  /// The common name
+  displayName String @unique
+
+  /// The user's twitch tokens
+  twitchTokens TwitchToken[]
+}
+
+model TwitchToken {
+  /// The unique identifier in the database
+  id String @id @default(cuid())
+
+  /// The time the token was created, in epoch milliseconds
+  createdAt DateTime @default(now())
+
+  /// The current token status
+  isActive Boolean @default(true)
+
+  /// The user name for whom the token was created
+  userName String
+
+  /// The user ID for whom the token was created
+  userId String
 
   /// The access token which is necessary for every request to the Twitch API
   accessToken String
@@ -34,10 +57,16 @@ model TwitchToken {
   /// The scope the access token is valid for, i.e. what the token enables you to do
   /// https://dev.twitch.tv/docs/authentication/scopes
   scope String
+
+  /// The ID of the user associated with the current token
+  ownerId String @unique
+
+  /// The user object associated with the current token
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 }
 
 model Chatter {
-  /// The unique identifier for the chatter
+  /// The unique identifier in the database
   id String @id @default(cuid())
 
   /// The ID of the channel the chatter is in
@@ -46,18 +75,19 @@ model Chatter {
   /// The ID of the user
   userId String @unique
 
-  /// The name of the user
-  userName String
+  /// The user login name
+  login String
+
+  /// User's display name
+  displayName String
 
   /// The user's messages
   messages Message[]
 }
 
 model Message {
-  /// The unique identifier for the message
+  /// The unique identifier in the database
   id String @id @default(cuid())
-
-  chatterId String
 
   /// The time the message was sent, in epoch milliseconds
   createdAt DateTime @default(now())
@@ -69,5 +99,8 @@ model Message {
   message String
 
   /// The ID of the chatter the message was sent from
+  chatterId String
+
+  /// The chatter object associated with the current message
   chatter Chatter @relation(fields: [chatterId], references: [id], onDelete: Cascade)
 }
