@@ -87,7 +87,7 @@ async function main() {
     }
 
     for (const command of commands) {
-      if (command.triggers.includes(userMessageText)) {
+      if (checkTriggers.some(userMessageText, command.triggers)) {
         const response = await command.run(user, userMessage);
         sirenachanBot.say(channel, response);
         return;
