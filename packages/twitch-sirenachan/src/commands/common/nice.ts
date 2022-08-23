@@ -1,14 +1,14 @@
-import chatter from 'api/chatter';
+import chatter from 'cache/chatter';
 
 export default {
   triggers: ['!nice'],
-  run: async (user: string) => {
-    const randomChatter = await chatter.pickRandom();
+  run: (currentUser: string) => {
+    const randomUserName = chatter.getRandomUserName();
 
-    if (user.toLowerCase() === randomChatter.userName) {
+    if (!randomUserName || currentUser === randomUserName) {
       return 'Найс ЧСВ peepoFat';
     }
 
-    return `APPLE Біжу повідоміти чатику, що ${randomChatter.userName} найс! APPLE`;
+    return `APPLE Біжу повідоміти чатику, що @${randomUserName} найс! APPLE`;
   }
 };

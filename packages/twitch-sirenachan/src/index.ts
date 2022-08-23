@@ -3,7 +3,7 @@ import cron from 'node-cron';
 import convertLayout from 'convert-layout/uk';
 
 import initAuth from 'api/auth';
-import chatter from 'api/chatter';
+import chatter from 'cache/chatter';
 import checkTriggers from 'utils/checkTriggers';
 import directoryLoader from 'utils/directoryLoader';
 import { CHANNEL } from 'utils/vars';
@@ -45,6 +45,14 @@ async function main() {
 
     const userMessageText = userMessage.toLocaleLowerCase().trim();
 
+    chatter.set(msg.userInfo.userName, {
+      channelId: msg.channelId,
+      messageId: msg.id,
+      userId: msg.userInfo.userId,
+      userName: msg.userInfo.userName,
+      message: userMessageText
+    });
+
     if (checkTriggers.some(userMessageText, ['ё', 'ъ', 'ы', 'э'])) {
       try {
         await sirenachanBot.deleteMessage(channel, msg.id);
@@ -75,18 +83,6 @@ async function main() {
         sirenachanBot.say(channel, response);
         return;
       }
-    }
-
-    try {
-      await chatter.store({
-        channelId: msg.channelId,
-        messageId: msg.id,
-        userId: msg.userInfo.userId,
-        userName: msg.userInfo.userName,
-        message: userMessageText
-      });
-    } catch (error) {
-      console.log('An error occurred while storing the message:', error);
     }
   });
 
