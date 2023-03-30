@@ -2,18 +2,22 @@ import dotenv from 'dotenv';
 import cron from 'node-cron';
 import convertLayout from 'convert-layout/uk';
 
+import { intervalToDuration, formatDuration } from 'date-fns';
+import * as duration from 'duration-fns';
+
 import createApiClient from 'clients/apiClient';
-import createEventSubListener from 'clients/eventSubListener';
 import createChatClient from 'clients/chatClient';
+import createEventSubListener from 'clients/eventSubListener';
 
-import twitchToken from 'models/twitchToken';
 import user from 'models/user';
+import twitchToken from 'models/twitchToken';
 
-import chatterList from 'cache/chatterList';
 import moderatorList from 'cache/moderatorList';
+import chatterList from 'cache/chatterList';
 
+import featuresLoader from 'utils/featuresLoader';
 import checkTriggers from 'utils/checkTriggers';
-import directoryLoader from 'utils/directoryLoader';
+import pickRandom from 'utils/pickRandom';
 
 dotenv.config();
 
@@ -31,10 +35,10 @@ async function main() {
     id: currentTwitchToken.userId
   };
 
-  const commands = await directoryLoader('src/commands/**/*.ts');
+  const commands = await featuresLoader('src/features/commands/**/*.{js,ts}');
   console.log('Loading commands...', commands.length);
 
-  const timers = await directoryLoader('src/timers/**/*.ts');
+  const timers = await featuresLoader('src/features/timers/**/*.{js,ts}');
   console.log('Loading timers...', timers.length);
 
   await sirenachanBot.onRegister(async () => {
@@ -54,26 +58,133 @@ async function main() {
     console.log('🔥');
   });
 
+  let deathCounter = 57;
+
   sirenachanBot.onMessage(async (channel, user, userMessage, msg) => {
     // do nothing if the message is from the bot
     if (user === sirenachanBot.currentNick) {
       return;
     }
 
-    const userMessageText = userMessage.toLocaleLowerCase().trim();
+    const userMessageWordsList = userMessage.toLocaleLowerCase().split(' ');
+    const randomEmote = pickRandom(['Threw', 'borpaSpin', 'Awkward', 'pepeLaughAngry', 'catSad']);
 
-    if (checkTriggers.some(userMessageText, ['ё', 'ъ', 'ы', 'э'])) {
-      try {
-        await sirenachanBot.deleteMessage(channel, msg.id);
-      } catch (error) {
-        console.log(`An error occurred while deleting the message of user ${user}:`, error);
-      }
-
-      sirenachanBot.say(channel, `@${user}, не пиши російською у чаті ReallyMad`);
-      return;
+    if (['!death', '!dd'].includes(userMessageWordsList[0])) {
+      sirenachanBot.say(channel, `/me сирена чан вмерла вже ${deathCounter} разів ${randomEmote}`);
     }
 
-    if (checkTriggers.some(userMessageText, ['!ой', '!ops', '~'])) {
+    if (['!death-add', '!dd+'].includes(userMessageWordsList[0])) {
+      if ([...moderatorList.getList(), 'reni_min'].includes(user)) {
+        deathCounter += 1;
+        sirenachanBot.say(
+          channel,
+          pickRandom([`/me ще одна смерть, всього тепер ${deathCounter} ${randomEmote}`])
+        );
+      }
+    }
+
+    if (['!death-rm', '!dd-'].includes(userMessageWordsList[0])) {
+      if ([...moderatorList.getList(), 'reni_min'].includes(user)) {
+        deathCounter -= 1;
+        sirenachanBot.say(channel, `@${user}, ок, чуваче Awkward`);
+      }
+    }
+
+    if (['!current-song', '!song', '!music', '!трек'].includes(userMessage)) {
+      try {
+        const currentSongResponse = await fetch(
+          'https://spotify.denis-avakov.workers.dev/get-now-playing'
+        );
+        const currentSongData = await currentSongResponse.json();
+
+        if (currentSongData.hasOwnProperty('ERROR')) {
+          const randomEmote = pickRandom([
+            'peepoSleep',
+            'British',
+            'catRose',
+            'Shruge',
+            'pEEEsda',
+            'BLUBBERSWTF',
+            'RAGEY'
+          ]);
+
+          sirenachanBot.say(channel, `@${user} зараз нічого не грає ${randomEmote}`);
+        } else {
+          sirenachanBot.say(
+            channel,
+            `@${user} ${currentSongData.item.name} - ${currentSongData.item.artists[0].name}`
+          );
+        }
+      } catch (error) {
+        console.log('_ error', error);
+          sirenachanBot.say(
+            channel,
+            `@${user} ой друже шото мені хуйовааааа`
+          );
+      }
+
+      // console.log('_', currentSongData);
+    }
+
+    if (userMessage === '!followage') {
+      const follow = await apiClient.users.getFollowFromUserToBroadcaster(
+        msg.userInfo.userId,
+        msg.channelId!
+      );
+
+      if (follow) {
+        const durationResult = intervalToDuration({
+          start: follow.followDate.getTime(),
+          end: Date.now()
+        });
+
+        const humanFormat = formatDuration(durationResult);
+
+        const seconds = duration.toSeconds(durationResult);
+        const minutes = duration.toMinutes(durationResult);
+        const days = duration.toDays(durationResult);
+
+        const message = pickRandom([
+          `hmm you have been following for ${humanFormat}`,
+          'if youre interested, you have been following for ${humanFormat}',
+          '*sigh*',
+          'counting things is hard',
+          `uh... you have been following for ${humanFormat}`,
+          `phew! maaan. you have been following for ${humanFormat}`,
+          `you have been following for ${humanFormat} and i think that's pretty good!`,
+          `i hope you like it: ${humanFormat}`,
+          `here you go... ${humanFormat}`,
+          `um... you have been following for ${seconds} seconds....`,
+          `woah! that's ${minutes} minutes you have been following....`,
+          'so... [object object] hope you like it',
+          `in days it will be ${days}`,
+          'no problem today is 2 november',
+          `you can have this ${humanFormat}`,
+          `geez you've been here for ${minutes} minutes`,
+          `i'm kinda busy right now`,
+          `спочатку кажи: Фелікс ти топ продовжуй в тому ж дусі!!!`
+        ]);
+
+        sirenachanBot.say(channel, `@${user} ${message}`);
+      } else {
+        sirenachanBot.say(channel, `@${user} You are not following!`);
+      }
+    }
+
+    if (checkTriggers.isMatch(userMessage, { any: ['ё', 'ъ', 'ы', 'э'] })) {
+      if (!['antos_', 'v4dolas'].includes(user)) {
+        try {
+          await sirenachanBot.deleteMessage(channel, msg.id);
+        } catch (error) {
+          console.log(`An error occurred while deleting the message of user ${user}:`, error);
+        }
+
+        sirenachanBot.say(channel, `@${user}, не пиши російською у чаті ReallyMad`);
+        return;
+      }
+    }
+
+    if (checkTriggers.isMatch(userMessage, { firstWord: ['!ой', '!ops'] })) {
       const previousMessage = await chatterList.getPreviousMessage(msg.userInfo.userName);
 
       if (previousMessage) {
@@ -87,8 +198,12 @@ async function main() {
     }
 
     for (const command of commands) {
-      if (checkTriggers.some(userMessageText, command.triggers)) {
-        const response = await command.run(user, userMessage);
+      if (!command.triggers?.firstWord || !command.onMessage) {
+        continue;
+      }
+
+      if (checkTriggers.some(userMessageWordsList[0], command.triggers.firstWord)) {
+        const response = await command.onMessage(user, userMessageWordsList);
         sirenachanBot.say(channel, response);
         return;
       }
@@ -99,17 +214,21 @@ async function main() {
       messageId: msg.id,
       userId: msg.userInfo.userId,
       userName: msg.userInfo.userName,
-      message: userMessageText
+      message: userMessage
     });
   });
 
   let cursorTimer = 0;
   cron.schedule('*/5 * * * *', async () => {
     if (await apiClient.streams.getStreamByUserId(CHANNEL.id)) {
-      cursorTimer = (cursorTimer + 1) % timers.length;
-      const response = timers[cursorTimer].run();
-      sirenachanBot.say(CHANNEL.name, response);
+      const currentTimer = timers[cursorTimer].onTimer;
+
+      if (typeof currentTimer === 'function') {
+        sirenachanBot.say(CHANNEL.name, currentTimer());
+      }
     }
+
+    cursorTimer = (cursorTimer + 1) % timers.length;
   });
 
   // await eventSubListener.subscribeToChannelCheerEvents(CHANNEL.id, (event) => {
@@ -183,7 +302,7 @@ async function main() {
   });
 
   await eventSubListener.subscribeToChannelRaidEventsTo(CHANNEL.id, (event) => {
-    const response = `${event.raidedBroadcasterDisplayName} just raided!`;
+    const response = `RAAAAID by ${event.raidedBroadcasterName}!`;
     sirenachanBot.say(CHANNEL.name, response);
   });
 

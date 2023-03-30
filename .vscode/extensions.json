@@ -1,10 +1,14 @@
 {
   "recommendations": [
-    "EditorConfig.EditorConfig",
+    "editorconfig.editorconfig",
     "esbenp.prettier-vscode",
-    "bradlc.vscode-tailwindcss",
     "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "irongeek.vscode-env",
     "vivaxy.vscode-conventional-commits",
-    "Prisma.prisma"
+    "usernamehw.errorlens",
+    "gruntfuggly.todo-tree",
+    "prisma.prisma",
+    "rhalaly.scope-to-this"
   ]
 }

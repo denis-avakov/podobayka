@@ -1,9 +1,12 @@
-import { sample } from 'lodash';
+import pickRandom from 'utils/pickRandom';
+import type { FeatureFile } from 'utils/types';
 
-export default {
-  triggers: ['!ball'],
-  run: () => {
-    return sample([
+export const feature: FeatureFile = {
+  triggers: {
+    firstWord: ['!ball']
+  },
+  onMessage: () => {
+    return pickRandom([
       'Моя відповідь — ТЯ! AlienPls3',
       'Мої чіпочакри вагаються. Спобуйте пізніше.',
       'Ніт SillyCat ',

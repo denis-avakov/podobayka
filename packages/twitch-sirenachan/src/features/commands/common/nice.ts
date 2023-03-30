@@ -1,11 +1,14 @@
 import chatterList from 'cache/chatterList';
+import type { FeatureFile } from 'utils/types';
 
-export default {
-  triggers: ['!nice'],
-  run: (currentUser: string) => {
+export const feature: FeatureFile = {
+  triggers: {
+    firstWord: ['!nice']
+  },
+  onMessage: (currentUserName) => {
     const randomUserName = chatterList.getRandomUserName();
 
-    if (!randomUserName || currentUser === randomUserName) {
+    if (!randomUserName || currentUserName === randomUserName) {
       return 'Найс ЧСВ peepoFat';
     }
 
