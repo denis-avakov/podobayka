@@ -6,6 +6,6 @@ export const feature: FeatureFile = {
     firstWord: ['!вебка', '!webcam', '!vebka', 'вебка']
   },
   onMessage: (userName) => {
-    return `Вебка крінж`;
+    return `вебка крінж PepoThink`;
   }
 };

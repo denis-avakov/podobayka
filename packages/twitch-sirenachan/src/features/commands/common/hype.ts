@@ -2,8 +2,8 @@ import type { FeatureFile } from 'utils/types';
 
 export const feature: FeatureFile = {
   triggers: {
-    firstWord: ['!hype']
+    firstWord: ['!hype', '!хайп']
   },
   onMessage: () =>
-    'blobDance  PikaWan  Claps  blobDance  PikaWan  Claps  blobDance  PikaWan  Claps  blobDance  PikaWan  Claps  blobDance  PikaWan  Claps  blobDance  PikaWan  Claps  blobDance  PikaWan  Claps  blobDance  PikaWan  Claps  blobDance  PikaWan  Claps  blobDance  PikaWan  Claps  blobDance  PikaWan  Claps  blobDance  PikaWan  Claps  blobDance  PikaWan  Claps  blobDance  PikaWan  Claps  blobDance  PikaWan  Claps'
+    'AAAA AlienPls3 BugcatHypee CatAutism catPls catSmash danceFrog KirbyDance PartyKirby peepoCheer peepoClap AAAA AlienPls3 BugcatHypee CatAutism catPls catSmash danceFrog KirbyDance PartyKirby peepoCheer peepoClap AAAA AlienPls3 BugcatHypee CatAutism catPls catSmash danceFrog KirbyDance PartyKirby peepoCheer peepoClap AAAA AlienPls3 BugcatHypee CatAutism catPls catSmash danceFrog KirbyDance PartyKirby peepoCheer peepoClap AAAA AlienPls3 BugcatHypee CatAutism catPls catSmash danceFrog KirbyDance'
 };

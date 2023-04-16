@@ -59,6 +59,7 @@ async function main() {
   });
 
   let deathCounter = 57;
+  let burpCounter = 0;
 
   sirenachanBot.onMessage(async (channel, user, userMessage, msg) => {
     // do nothing if the message is from the bot
@@ -68,6 +69,36 @@ async function main() {
 
     if ((userMessage.includes('где') && userMessage.includes('вебка')) || (userMessage.includes('де') && userMessage.includes('вебка'))) {
       sirenachanBot.say(channel, `${user} в пєзді пошукай`);
+      return;
+    }
+
+    if (userMessage.includes('xdding')) {
+      sirenachanBot.say(channel, `xdding`);
+      return;
+    }
+
+    if (userMessage.includes('xddkiss')) {
+      sirenachanBot.say(channel, `xddkiss`);
+      return;
+    }
+
+    if (userMessage.includes('йомайо')) {
+      sirenachanBot.say(channel, `йомайо Brooooo`);
+      return;
+    }
+
+    if (userMessage.includes('тойво') || userMessage.includes('цейво')) {
+      sirenachanBot.say(channel, `Цейво... забув PepoThink`);
+      return;
+    }
+
+    if (userMessage.includes('база') || userMessage.includes('цейво')) {
+      sirenachanBot.say(channel, `Ґрунт 😎 База 😎 так би мовити — Основа 😎 Стрижень 😎 Наріжний камінь 😎 Фундамент 😎 Твердиня 😎 Осердя 😎 Підвалина 😎 Моноліт 😎 Літосферна плита 😎 Серцевина`);
+      return;
+    }
+
+    if ((userMessage.includes('крісло') && userMessage.includes('стрімить')) || (userMessage.includes('стілець') && userMessage.includes('стрімить'))) {
+      sirenachanBot.say(channel, `Бля де вона? 77? Ахахахаха вона що зі стріму пішла?!? Аахаха ляя у вас стрімер пішов зі стріму?! Просто встав і пішов??? ХАХаххахаха Стілець стрімить чи шо?! АУУУ! Може вона там подавилася водою або об кут спіткнулася і непритомна валяється!! Ахаха Ну гаразд, я тоді теж візьму і піду і не буду нічого не писати поки не прийде`);
       return;
     }
 
@@ -92,6 +123,13 @@ async function main() {
       if ([...moderatorList.getList(), 'reni_min'].includes(user)) {
         deathCounter -= 1;
         sirenachanBot.say(channel, `@${user}, ок, чуваче Awkward`);
+      }
+    }
+
+    if (['!риг'].includes(userMessageWordsList[0])) {
+      if ([...moderatorList.getList()].includes(user)) {
+        burpCounter += 1;
+        sirenachanBot.say(channel, `Ашалєть, Сиреночка ригнула на стрімі ${burpCounter} раз DonkSass`);
       }
     }
 
