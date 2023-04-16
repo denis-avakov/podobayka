@@ -66,6 +66,11 @@ async function main() {
       return;
     }
 
+    if ((userMessage.includes('где') && userMessage.includes('вебка')) || (userMessage.includes('де') && userMessage.includes('вебка'))) {
+      sirenachanBot.say(channel, `${user} в пєзді пошукай`);
+      return;
+    }
+
     const userMessageWordsList = userMessage.toLocaleLowerCase().split(' ');
     const randomEmote = pickRandom(['Threw', 'borpaSpin', 'Awkward', 'pepeLaughAngry', 'catSad']);
 
@@ -117,10 +122,7 @@ async function main() {
         }
       } catch (error) {
         console.log('_ error', error);
-          sirenachanBot.say(
-            channel,
-            `@${user} ой друже шото мені хуйовааааа`
-          );
+        sirenachanBot.say(channel, `@${user} ой друже шото мені хуйовааааа`);
       }
 
       // console.log('_', currentSongData);
