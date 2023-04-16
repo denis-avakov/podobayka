@@ -11,35 +11,35 @@ export const feature: FeatureFile = {
 
     if (0 === bibaLength) {
       return pickRandom([
-        `${userName}, песюн 0 (НУЛЬ) см. monkaW`,
-        `${userName}, у тебе немає песюна! pepePoint`
+        `${userName}, песюн 0 (НУЛЬ) см. Brooooo`,
+        `${userName}, у тебе немає песюна! catOK`
       ]);
     }
 
     if (10 >= bibaLength) {
       return pickRandom([
-        `Ого, у ${userName} гвинтик ${bibaLength} см peepoGiggles`,
+        `Ого, у ${userName} гвинтик ${bibaLength} см MyHonestReaction`,
         `${userName} бібібі ${bibaLength} см maaaaan`
       ]);
     }
 
     if (16 >= bibaLength) {
       return pickRandom([
-        `${userName}, твій містер бібі ${bibaLength} см PepoG`,
-        `У ${userName} бебрик ${bibaLength} см. Ммм, а пахне як! YAPPP`
+        `${userName}, твій містер бібі ${bibaLength} см Binoculous`,
+        `У ${userName} бебрик ${bibaLength} см. Ммм, а пахне як! OkayChamp`
       ]);
     }
 
     if (25 >= bibaLength) {
       return pickRandom([
-        `Хіхі, а ${userName} має бібу ${bibaLength} см Awkward`,
-        `Ого, ого у ${userName} ${bibaLength} см. Моя повага peepoRasp`
+        `Хіхі, а ${userName} має бібу ${bibaLength} см STAREBUTINLOVE`,
+        `Ого, ого у ${userName} ${bibaLength} см. Моя повага frenn`
       ]);
     }
 
     return pickRandom([
-      `УВАГА! ${userName} має ${bibaLength} см. Ти шо, бібозавр? Binoculous`,
-      `${userName} твій бабрище аж ${bibaLength} см! ReallyMad`
+      `УВАГА! ${userName} має ${bibaLength} см. Ти шо, бібозавр? SUSSY`,
+      `АШАЛЄТЬ ${userName} твій бабрище аж ${bibaLength} см! ReallyMad`
     ]);
   }
 };
