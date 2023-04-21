@@ -2,6 +2,6 @@ import type { FeatureFile } from 'utils/types';
 
 export const feature: FeatureFile = {
   onTimer: () => {
-    return '/announce Не бачиш таких емоутів як veryCat або Binoculous? Це тому, що ти не використовуєш екстеншин для браузера 7tv! Завантаж, встанови та насолоджуйся чатом: https://7tv.app/';
+    return 'Не бачиш таких емоутів як veryCat або Binoculous? Це тому, що ти не використовуєш екстеншин для браузера 7tv! Завантаж, встанови та насолоджуйся чатом: https://7tv.app/';
   }
 };
