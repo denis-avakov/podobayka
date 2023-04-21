@@ -39,11 +39,14 @@ async function main() {
   console.log('Loading commands...', commands.length);
 
   const timers = await featuresLoader('src/features/timers/**/*.{js,ts}');
-  console.log('Loading timers...', timers.length);
+  console.log('Loading timers...', timers, timers.length);
 
   await sirenachanBot.onRegister(async () => {
-    const mods = await sirenachanBot.getMods(CHANNEL.name);
-    [...mods, CHANNEL.name].forEach((value) => moderatorList.set(value));
+    // const mods = await apiClient.moderation.getModerators(CHANNEL.name);
+    // [...mods.data, CHANNEL.name].forEach((value) => moderatorList.set(value.toString()));
+    ['akilla7', 'astound_ing', 'elriwen', 'SIENABOT', 'soony', 'den3er', CHANNEL.name].forEach(
+      (value) => moderatorList.set(value)
+    );
   });
 
   await sirenachanBot.onWhisper((user, message) => {
@@ -67,7 +70,10 @@ async function main() {
       return;
     }
 
-    if ((userMessage.includes('где') && userMessage.includes('вебка')) || (userMessage.includes('де') && userMessage.includes('вебка'))) {
+    if (
+      (userMessage.includes('где') && userMessage.includes('вебка')) ||
+      (userMessage.includes('де') && userMessage.includes('вебка'))
+    ) {
       sirenachanBot.say(channel, `${user} в пєзді пошукай`);
       return;
     }
@@ -93,12 +99,21 @@ async function main() {
     }
 
     if (userMessage.includes('база') || userMessage.includes('цейво')) {
-      sirenachanBot.say(channel, `Ґрунт 😎 База 😎 так би мовити — Основа 😎 Стрижень 😎 Наріжний камінь 😎 Фундамент 😎 Твердиня 😎 Осердя 😎 Підвалина 😎 Моноліт 😎 Літосферна плита 😎 Серцевина`);
+      sirenachanBot.say(
+        channel,
+        `Ґрунт 😎 База 😎 так би мовити — Основа 😎 Стрижень 😎 Наріжний камінь 😎 Фундамент 😎 Твердиня 😎 Осердя 😎 Підвалина 😎 Моноліт 😎 Літосферна плита 😎 Серцевина`
+      );
       return;
     }
 
-    if ((userMessage.includes('крісло') && userMessage.includes('стрімить')) || (userMessage.includes('стілець') && userMessage.includes('стрімить'))) {
-      sirenachanBot.say(channel, `Бля де вона? 77? Ахахахаха вона що зі стріму пішла?!? Аахаха ляя у вас стрімер пішов зі стріму?! Просто встав і пішов??? ХАХаххахаха Стілець стрімить чи шо?! АУУУ! Може вона там подавилася водою або об кут спіткнулася і непритомна валяється!! Ахаха Ну гаразд, я тоді теж візьму і піду і не буду нічого не писати поки не прийде`);
+    if (
+      (userMessage.includes('крісло') && userMessage.includes('стрімить')) ||
+      (userMessage.includes('стілець') && userMessage.includes('стрімить'))
+    ) {
+      sirenachanBot.say(
+        channel,
+        `Бля де вона? 77? Ахахахаха вона що зі стріму пішла?!? Аахаха ляя у вас стрімер пішов зі стріму?! Просто встав і пішов??? ХАХаххахаха Стілець стрімить чи шо?! АУУУ! Може вона там подавилася водою або об кут спіткнулася і непритомна валяється!! Ахаха Ну гаразд, я тоді теж візьму і піду і не буду нічого не писати поки не прийде`
+      );
       return;
     }
 
@@ -129,7 +144,10 @@ async function main() {
     if (['!риг'].includes(userMessageWordsList[0])) {
       if ([...moderatorList.getList()].includes(user)) {
         burpCounter += 1;
-        sirenachanBot.say(channel, `Ашалєть, Сиреночка ригнула на стрімі ${burpCounter} раз DonkSass`);
+        sirenachanBot.say(
+          channel,
+          `Ашалєть, Сиреночка ригнула на стрімі ${burpCounter} раз DonkSass`
+        );
       }
     }
 
@@ -162,8 +180,6 @@ async function main() {
         console.log('_ error', error);
         sirenachanBot.say(channel, `@${user} ой друже шото мені хуйовааааа`);
       }
-
-      // console.log('_', currentSongData);
     }
 
     if (userMessage === '!followage') {
@@ -259,14 +275,21 @@ async function main() {
   });
 
   let cursorTimer = 0;
-  cron.schedule('*/5 * * * *', async () => {
-    if (await apiClient.streams.getStreamByUserId(CHANNEL.id)) {
-      const currentTimer = timers[cursorTimer].onTimer;
+  cron.schedule('*/10 * * * *', async () => {
+    const currentTimer = timers[cursorTimer].onTimer;
 
-      if (typeof currentTimer === 'function') {
-        sirenachanBot.say(CHANNEL.name, currentTimer());
-      }
+    console.log('_', cursorTimer);
+
+    if (typeof currentTimer === 'function') {
+      sirenachanBot.say('sirena_chan', currentTimer());
     }
+
+    // if (await apiClient.streams.getStreamByUserId(CHANNEL.id)) {
+    //   const currentTimer = timers[cursorTimer].onTimer;
+    //   if (typeof currentTimer === 'function') {
+    //     sirenachanBot.say(CHANNEL.name, currentTimer());
+    //   }
+    // }
 
     cursorTimer = (cursorTimer + 1) % timers.length;
   });
