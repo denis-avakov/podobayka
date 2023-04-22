@@ -7,7 +7,7 @@ export const feature: FeatureFile = {
   },
   onMessage: (userName) => {
     if (moderatorList.getList().includes(userName)) {
-      return '/announce https://www.instagram.com/sirenachan';
+      return 'https://www.instagram.com/sirenachan';
     }
 
     return `${userName} https://www.instagram.com/sirenachan`;

@@ -278,8 +278,6 @@ async function main() {
   cron.schedule('*/10 * * * *', async () => {
     const currentTimer = timers[cursorTimer].onTimer;
 
-    console.log('_', cursorTimer);
-
     if (typeof currentTimer === 'function') {
       sirenachanBot.say('sirena_chan', currentTimer());
     }
