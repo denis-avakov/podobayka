@@ -9,10 +9,10 @@ export const feature: FeatureFile = {
   onMessage: (userName) => {
     if (moderatorList.getList().includes(userName)) {
       return pickRandom([
-        'Долучайтесь до тг-каналу з мемчиками, фоточками та сповіщеннями про стрім AlienPls3 https://t.me/sirenachan AlienPls3'
+        'Долучайтесь до тг-каналу з мемчиками, фоточками та сповіщеннями про стрім AlienPls3 https://t.me/anerisun AlienPls3'
       ]);
     }
 
-    return `${userName} https://t.me/sirenachan`;
+    return `${userName} https://t.me/anerisun`;
   }
 };

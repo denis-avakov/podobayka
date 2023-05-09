@@ -23,7 +23,7 @@ dotenv.config();
 
 async function main() {
   const currentTwitchToken = await Promise.resolve()
-    .then(() => user.get('Sirenachan'))
+    .then(() => user.get('Anerisun'))
     .then((userProfile) => twitchToken.get(userProfile.id));
 
   const apiClient = createApiClient();
