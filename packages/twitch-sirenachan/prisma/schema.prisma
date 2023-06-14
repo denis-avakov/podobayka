@@ -2,14 +2,13 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  provider = "prisma-client-js"
 }
 
 model User {
@@ -46,7 +45,7 @@ model TwitchToken {
   accessToken String
 
   /// The time, in seconds from the obtainment date, when the access token expires
-  expiresIn Int?
+  expiresIn BigInt?
 
   /// The date when the token was obtained, in epoch milliseconds
   obtainmentTimestamp BigInt

@@ -1,0 +1,32 @@
+{
+    "accessToken": "y8wycp7begs438tjvqsii148sf0jnp",
+    "refreshToken": "7tay63vvslgafzv3eryvbqw5jicxum15hfqr2uv2zu8bz5na66",
+    "scope": [
+        "channel:manage:broadcast",
+        "channel:manage:extensions",
+        "channel:manage:moderators",
+        "channel:manage:polls",
+        "channel:manage:predictions",
+        "channel:manage:raids",
+        "channel:manage:redemptions",
+        "channel:manage:videos",
+        "channel:manage:vips",
+        "channel:read:charity",
+        "channel:read:editors",
+        "channel:read:goals",
+        "channel:read:hype_train",
+        "channel:read:polls",
+        "channel:read:predictions",
+        "channel:read:redemptions",
+        "channel:read:subscriptions",
+        "channel:read:vips",
+        "clips:edit",
+        "moderation:read",
+        "moderator:manage:announcements",
+        "moderator:manage:banned_users",
+        "moderator:manage:chat_messages",
+        "moderator:read:followers"
+    ],
+    "expiresIn": 13466,
+    "obtainmentTimestamp": 1686775195774
+}

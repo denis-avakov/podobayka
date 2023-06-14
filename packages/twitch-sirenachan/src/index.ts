@@ -21,19 +21,78 @@ import pickRandom from 'utils/pickRandom';
 
 dotenv.config();
 
+function isChatPyramid(chat: string) {
+  const messages = chat.split('\n');
+
+  for (let i = 0; i < messages.length; i++) {
+    const message = messages[i];
+
+    for (let j = i + 1; j < messages.length; j++) {
+      const nextMessage = messages[j];
+
+      if (countRepeatedWords(message) >= countRepeatedWords(nextMessage)) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+function countRepeatedWords(message: string) {
+  const words = message.trim().split(' ');
+  const wordCount: any = {};
+
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    wordCount[word] = (wordCount[word] || 0) + 1;
+  }
+
+  let repeatedCount = 0;
+  for (const word in wordCount) {
+    if (wordCount[word] > 1) {
+      repeatedCount++;
+    }
+  }
+
+  return repeatedCount;
+}
+
+function hasRepeatedWords(message: string) {
+  const words = message.trim().split(' ');
+  const uniqueWords = new Set(words);
+
+  return uniqueWords.size < words.length;
+}
+
 async function main() {
   const currentTwitchToken = await Promise.resolve()
-    .then(() => user.get('Sirenachan'))
+    .then(() => user.get('anerisun'))
     .then((userProfile) => twitchToken.get(userProfile.id));
 
   const apiClient = createApiClient();
   const sirenachanBot = await createChatClient(currentTwitchToken);
-  const eventSubListener = await createEventSubListener(apiClient);
+  const eventSubListener = await createEventSubListener();
 
   const CHANNEL = {
     name: currentTwitchToken.userName,
     id: currentTwitchToken.userId
   };
+
+  sirenachanBot.onAuthenticationFailure((channel, text) => {
+    console.log('_', channel, text);
+  });
+  sirenachanBot.onTokenFetchFailure((error) => {
+    console.log('_', error);
+  });
+
+  await sirenachanBot.onWhisper(async (user, message) => {
+    if (moderatorList.getList().includes(user)) {
+      sirenachanBot.say(CHANNEL.name, message);
+    }
+
+    console.log(user, message);
+  });
 
   const commands = await featuresLoader('src/features/commands/**/*.{js,ts}');
   console.log('Loading commands...', commands.length);
@@ -41,15 +100,19 @@ async function main() {
   const timers = await featuresLoader('src/features/timers/**/*.{js,ts}');
   console.log('Loading timers...', timers, timers.length);
 
-  await sirenachanBot.onRegister(async () => {
-    // const mods = await apiClient.moderation.getModerators(CHANNEL.name);
-    // [...mods.data, CHANNEL.name].forEach((value) => moderatorList.set(value.toString()));
-    ['akilla7', 'astound_ing', 'elriwen', 'SIENABOT', 'soony', 'den3er', CHANNEL.name].forEach(
-      (value) => moderatorList.set(value)
-    );
-  });
+  // await sirenachanBot.onRegister(async () => {
+  //   // const mods = await apiClient.moderation.getModerators(CHANNEL.name);
+  //   // [...mods.data, CHANNEL.name].forEach((value) => moderatorList.set(value.toString()));
+  //   ['akilla7', 'astound_ing', 'elriwen', 'SIENABOT', 'soony', 'den3er', CHANNEL.name].forEach(
+  //     (value) => moderatorList.set(value)
+  //   );
+  // });
 
-  await sirenachanBot.onWhisper((user, message) => {
+  ['akilla7', 'astound_ing', 'elriwen', 'SIENABOT', 'soony', 'den3er', CHANNEL.name].forEach(
+    (value) => moderatorList.set(value)
+  );
+
+  await sirenachanBot.onWhisper(async (user, message) => {
     if (moderatorList.getList().includes(user)) {
       sirenachanBot.say(CHANNEL.name, message);
     }
@@ -62,19 +125,40 @@ async function main() {
   });
 
   let deathCounter = 57;
-  let burpCounter = 0;
+  let burpCounter = 99445;
+
+  let currentStreak = 0;
+  let currentStreakWord = '';
+  let currentStreakMessages = [];
 
   sirenachanBot.onMessage(async (channel, user, userMessage, msg) => {
     // do nothing if the message is from the bot
-    if (user === sirenachanBot.currentNick) {
+    if (user === 'sienabot') {
       return;
     }
 
+    // Emote Pyramids
+    const messageTags = userMessage.split(' ').filter((text) => text);
+
+    if (currentStreak === 0 && messageTags.length === 1) {
+      currentStreak += 1;
+      currentStreakWord = messageTags[0];
+    }
+
+    if (currentStreak >= 1 && messageTags.length >= 1) {
+      if (hasRepeatedWords(userMessage)) {
+        currentStreakMessages.push(userMessage);
+      }
+    }
+    // - - -
+
     if (
       (userMessage.includes('где') && userMessage.includes('вебка')) ||
-      (userMessage.includes('де') && userMessage.includes('вебка'))
+      (userMessage.includes('де') && userMessage.includes('вебка')) ||
+      (userMessage.includes('де') && userMessage.includes('вебочка')) ||
+      (userMessage.includes('где') && userMessage.includes('вебочка'))
     ) {
-      sirenachanBot.say(channel, `${user} в пєзді пошукай`);
+      sirenachanBot.say(channel, `/me ${user} в пєзді пошукай`);
       return;
     }
 
@@ -89,19 +173,19 @@ async function main() {
     }
 
     if (userMessage.includes('йомайо')) {
-      sirenachanBot.say(channel, `йомайо Brooooo`);
+      sirenachanBot.say(channel, `/me йомайо Brooooo`);
       return;
     }
 
     if (userMessage.includes('тойво') || userMessage.includes('цейво')) {
-      sirenachanBot.say(channel, `Цейво... забув PepoThink`);
+      sirenachanBot.say(channel, `/me Цейво... забув PepoThink`);
       return;
     }
 
     if (userMessage.includes('база') || userMessage.includes('цейво')) {
       sirenachanBot.say(
         channel,
-        `Ґрунт 😎 База 😎 так би мовити — Основа 😎 Стрижень 😎 Наріжний камінь 😎 Фундамент 😎 Твердиня 😎 Осердя 😎 Підвалина 😎 Моноліт 😎 Літосферна плита 😎 Серцевина`
+        `/me Ґрунт 😎 База 😎 так би мовити — Основа 😎 Стрижень 😎 Наріжний камінь 😎 Фундамент 😎 Твердиня 😎 Осердя 😎 Підвалина 😎 Моноліт 😎 Літосферна плита 😎 Серцевина`
       );
       return;
     }
@@ -112,7 +196,7 @@ async function main() {
     ) {
       sirenachanBot.say(
         channel,
-        `Бля де вона? 77? Ахахахаха вона що зі стріму пішла?!? Аахаха ляя у вас стрімер пішов зі стріму?! Просто встав і пішов??? ХАХаххахаха Стілець стрімить чи шо?! АУУУ! Може вона там подавилася водою або об кут спіткнулася і непритомна валяється!! Ахаха Ну гаразд, я тоді теж візьму і піду і не буду нічого не писати поки не прийде`
+        `/me Бля де вона? 77? Ахахахаха вона що зі стріму пішла?!? Аахаха ляя у вас стрімер пішов зі стріму?! Просто встав і пішов??? ХАХаххахаха Стілець стрімить чи шо?! АУУУ! Може вона там подавилася водою або об кут спіткнулася і непритомна валяється!! Ахаха Ну гаразд, я тоді теж візьму і піду і не буду нічого не писати поки не прийде`
       );
       return;
     }
@@ -137,18 +221,16 @@ async function main() {
     if (['!death-rm', '!dd-'].includes(userMessageWordsList[0])) {
       if ([...moderatorList.getList(), 'reni_min'].includes(user)) {
         deathCounter -= 1;
-        sirenachanBot.say(channel, `@${user}, ок, чуваче Awkward`);
+        sirenachanBot.say(channel, `/me @${user}, ок, чуваче Awkward`);
       }
     }
 
     if (['!риг'].includes(userMessageWordsList[0])) {
-      if ([...moderatorList.getList()].includes(user)) {
-        burpCounter += 1;
-        sirenachanBot.say(
-          channel,
-          `Ашалєть, Сиреночка ригнула на стрімі ${burpCounter} раз DonkSass`
-        );
-      }
+      burpCounter += 1;
+      sirenachanBot.say(
+        channel,
+        `/me Ашалєть, Сиреночка ригнула на стрімі ${burpCounter} раз DonkSass`
+      );
     }
 
     if (['!current-song', '!song', '!music', '!трек'].includes(userMessage)) {
@@ -169,16 +251,16 @@ async function main() {
             'RAGEY'
           ]);
 
-          sirenachanBot.say(channel, `@${user} зараз нічого не грає ${randomEmote}`);
+          sirenachanBot.say(channel, `/me @${user} зараз нічого не грає ${randomEmote}`);
         } else {
           sirenachanBot.say(
             channel,
-            `@${user} ${currentSongData.item.name} - ${currentSongData.item.artists[0].name}`
+            `/me @${user} ${currentSongData.item.name} - ${currentSongData.item.artists[0].name}`
           );
         }
       } catch (error) {
         console.log('_ error', error);
-        sirenachanBot.say(channel, `@${user} ой друже шото мені хуйовааааа`);
+        sirenachanBot.say(channel, `/me @${user} ой друже шото мені хуйовааааа`);
       }
     }
 
@@ -221,21 +303,22 @@ async function main() {
           `спочатку кажи: Фелікс ти топ продовжуй в тому ж дусі!!!`
         ]);
 
-        sirenachanBot.say(channel, `@${user} ${message}`);
+        sirenachanBot.say(channel, `/me @${user} ${message}`);
       } else {
-        sirenachanBot.say(channel, `@${user} You are not following!`);
+        sirenachanBot.say(channel, `/me @${user} You are not following!`);
       }
     }
 
     if (checkTriggers.isMatch(userMessage, { any: ['ё', 'ъ', 'ы', 'э'] })) {
       if (!['antos_', 'v4dolas'].includes(user)) {
         try {
-          await sirenachanBot.deleteMessage(channel, msg.id);
+          // TODO
+          // await sirenachanBot.deleteMessage(channel, msg.id);
         } catch (error) {
           console.log(`An error occurred while deleting the message of user ${user}:`, error);
         }
 
-        sirenachanBot.say(channel, `@${user}, не пиши російською у чаті ReallyMad`);
+        sirenachanBot.say(channel, `/me @${user}, не пиши російською у чаті ReallyMad`);
         return;
       }
     }
@@ -245,9 +328,9 @@ async function main() {
 
       if (previousMessage) {
         const text = convertLayout.fromEn(previousMessage);
-        sirenachanBot.say(channel, `${user}, сказав: ${text}`);
+        sirenachanBot.say(channel, `/me ${user}, сказав: ${text}`);
       } else {
-        sirenachanBot.say(channel, `${user}, не можу знайти попереднє повідомлення`);
+        sirenachanBot.say(channel, `/me ${user}, не можу знайти попереднє повідомлення`);
       }
 
       return;
@@ -260,7 +343,7 @@ async function main() {
 
       if (checkTriggers.some(userMessageWordsList[0], command.triggers.firstWord)) {
         const response = await command.onMessage(user, userMessageWordsList);
-        sirenachanBot.say(channel, response);
+        sirenachanBot.say(channel, '/me ' + response);
         return;
       }
     }
@@ -274,135 +357,136 @@ async function main() {
     });
   });
 
-  let cursorTimer = 0;
+  let cursorTimer = 2;
   cron.schedule('*/10 * * * *', async () => {
     const currentTimer = timers[cursorTimer].onTimer;
 
     if (typeof currentTimer === 'function') {
-      sirenachanBot.say('sirena_chan', currentTimer());
+      sirenachanBot.say(CHANNEL.name, '/me ' + currentTimer());
     }
 
-    // if (await apiClient.streams.getStreamByUserId(CHANNEL.id)) {
-    //   const currentTimer = timers[cursorTimer].onTimer;
-    //   if (typeof currentTimer === 'function') {
-    //     sirenachanBot.say(CHANNEL.name, currentTimer());
-    //   }
-    // }
+    if (await apiClient.streams.getStreamByUserId(CHANNEL.id)) {
+      const currentTimer = timers[cursorTimer].onTimer;
+      if (typeof currentTimer === 'function') {
+        sirenachanBot.say(CHANNEL.name, '/me ' + currentTimer());
+      }
+    }
 
     cursorTimer = (cursorTimer + 1) % timers.length;
   });
 
-  // await eventSubListener.subscribeToChannelCheerEvents(CHANNEL.id, (event) => {
+  // await eventSubListener.onChannelCheer(CHANNEL.id, (event) => {
   //   const response = `${event.userDisplayName} just cheered ${event.bits} bits!`;
   //   sirenachanBot.say(CHANNEL.name, response);
   // });
 
-  await eventSubListener.subscribeToChannelFollowEvents(CHANNEL.id, (event) => {
-    const response = `${event.userDisplayName} just followed!`;
+  eventSubListener.onSubscriptionCreateFailure((subscription, error) => {
+    console.log('_ onSubscriptionCreateFailure', subscription, error);
+  });
+
+  await eventSubListener.onChannelGoalBegin(CHANNEL.id, (event) => {
+    const response = `/me ${event.broadcasterDisplayName} just started a goal!`;
     sirenachanBot.say(CHANNEL.name, response);
   });
 
-  // await eventSubListener.subscribeToChannelGoalBeginEvents(CHANNEL.id, (event) => {
-  //   const response = `${event.broadcasterDisplayName} just started a goal!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
-
-  // await eventSubListener.subscribeToChannelGoalEndEvents(CHANNEL.id, (event) => {
-  //   const response = `${event.broadcasterDisplayName} just ended a goal!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
-
-  // await eventSubListener.subscribeToChannelGoalProgressEvents(CHANNEL.id, (event) => {
-  //   const response = `${event.broadcasterDisplayName} just made a progress!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
-
-  // await eventSubListener.subscribeToChannelHypeTrainBeginEvents(CHANNEL.id, (event) => {
-  //   const response = `${event.broadcasterDisplayName} just started a hype train!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
-
-  // await eventSubListener.subscribeToChannelHypeTrainEndEvents(CHANNEL.id, (event) => {
-  //   const response = `${event.broadcasterDisplayName} just ended a hype train!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
-
-  // await eventSubListener.subscribeToChannelHypeTrainProgressEvents(CHANNEL.id, (event) => {
-  //   const response = `${event.broadcasterDisplayName} just made a progress!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
-
-  // await eventSubListener.subscribeToChannelPollBeginEvents(CHANNEL.id, (event) => {
-  //   const response = `${event.broadcasterDisplayName} just started a poll!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
-
-  // await eventSubListener.subscribeToChannelPollEndEvents(CHANNEL.id, (event) => {
-  //   const response = `${event.broadcasterDisplayName} just ended a poll!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
-
-  // await eventSubListener.subscribeToChannelPredictionBeginEvents(CHANNEL.id, (event) => {
-  //   const response = `${event.broadcasterDisplayName} just started a prediction!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
-
-  // await eventSubListener.subscribeToChannelPredictionEndEvents(CHANNEL.id, (event) => {
-  //   const response = `${event.broadcasterDisplayName} just ended a prediction!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
-
-  // await eventSubListener.subscribeToChannelPredictionLockEvents(CHANNEL.id, (event) => {
-  //   const response = `${event.broadcasterDisplayName} just locked a prediction!`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
-
-  await eventSubListener.subscribeToChannelRaidEventsFrom(CHANNEL.id, (event) => {
-    const response = `${event.raidingBroadcasterDisplayName} going to raid!`;
+  await eventSubListener.onChannelGoalEnd(CHANNEL.id, (event) => {
+    const response = `/me ${event.broadcasterDisplayName} just ended a goal!`;
     sirenachanBot.say(CHANNEL.name, response);
   });
 
-  await eventSubListener.subscribeToChannelRaidEventsTo(CHANNEL.id, (event) => {
-    const response = `RAAAAID by ${event.raidedBroadcasterName}!`;
+  await eventSubListener.onChannelGoalProgress(CHANNEL.id, (event) => {
+    const response = `/me ${event.broadcasterDisplayName} just made a progress!`;
     sirenachanBot.say(CHANNEL.name, response);
   });
 
-  await eventSubListener.subscribeToChannelRedemptionAddEvents(CHANNEL.id, (event) => {
-    const response = `${event.userDisplayName} just added a redemption!`;
+  await eventSubListener.onChannelHypeTrainBegin(CHANNEL.id, (event) => {
+    const response = `/me ${event.broadcasterDisplayName} just started a hype train!`;
     sirenachanBot.say(CHANNEL.name, response);
   });
 
-  // await eventSubListener.subscribeToChannelSubscriptionEvents(CHANNEL.id, (event) => {
-  //   const response = `@${event.userDisplayName}, дякую, дуже дякую за підписку 💜`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
+  await eventSubListener.onChannelHypeTrainEnd(CHANNEL.id, (event) => {
+    const response = `/me ${event.broadcasterDisplayName} just ended a hype train!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
 
-  // await eventSubListener.subscribeToChannelSubscriptionGiftEvents(CHANNEL.id, (event) => {
-  //   const response = `Ував увавчики, дякую ${event.gifterDisplayName} за ${event.amount} подарованих підписок. Цьом в носик 💜`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
+  await eventSubListener.onChannelHypeTrainProgress(CHANNEL.id, (event) => {
+    const response = `/me ${event.broadcasterDisplayName} just made a progress!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
 
-  // await eventSubListener.subscribeToChannelSubscriptionMessageEvents(CHANNEL.id, (event) => {
-  //   const response = `Вітаю, дякую ${event.userDisplayName} за підписку! 💜`;
-  //   sirenachanBot.say(CHANNEL.name, response);
-  // });
+  await eventSubListener.onChannelPollBegin(CHANNEL.id, (event) => {
+    const response = `/me ${event.broadcasterDisplayName} just started a poll!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
 
-  await eventSubListener.subscribeToStreamOfflineEvents(CHANNEL.id, (event) => {
-    const response = `${event.broadcasterDisplayName} just went offline!`;
+  await eventSubListener.onChannelPollEnd(CHANNEL.id, (event) => {
+    const response = `/me ${event.broadcasterDisplayName} just ended a poll!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
+
+  await eventSubListener.onChannelPollProgress(CHANNEL.id, (event) => {
+    const response = `/me ${event.broadcasterDisplayName} just started a prediction!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
+
+  await eventSubListener.onChannelPredictionEnd(CHANNEL.id, (event) => {
+    const response = `/me ${event.broadcasterDisplayName} just ended a prediction!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
+
+  await eventSubListener.onChannelPredictionLock(CHANNEL.id, (event) => {
+    const response = `/me ${event.broadcasterDisplayName} just locked a prediction!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
+
+  await eventSubListener.onChannelRaidFrom(CHANNEL.id, async (event) => {
+    const name = await event.getRaidedBroadcaster();
+    const response = `/me RAAAAID by ${name}!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
+
+  await eventSubListener.onChannelRaidTo(CHANNEL.id, async (event) => {
+    const name = await event.getRaidingBroadcaster();
+    const response = `/me ${name} going to raid!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
+
+  await eventSubListener.onChannelRedemptionAdd(CHANNEL.id, (event) => {
+    const response = `/me ${event.userDisplayName} just added a redemption!`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
+
+  await eventSubListener.onChannelFollow(CHANNEL.id, (event) => {
+    const response = `/me @${event.userDisplayName}, дякую, дуже дякую за підписку 💜`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
+
+  await eventSubListener.onChannelSubscriptionGift(CHANNEL.id, (event) => {
+    const response = `/me Ував увавчики, дякую ${event.gifterDisplayName} за ${event.amount} подарованих підписок. Цьом в носик 💜`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
+
+  await eventSubListener.onChannelSubscription(CHANNEL.id, (event) => {
+    const response = `/me Вітаю, дякую ${event.userDisplayName} за підписку! 💜`;
+    sirenachanBot.say(CHANNEL.name, response);
+  });
+
+  await eventSubListener.onStreamOffline(CHANNEL.id, (event) => {
+    const response = `/me ${event.broadcasterDisplayName} just went offline!`;
     sirenachanBot.say(CHANNEL.name, response);
 
     chatterList.clear();
   });
 
-  await eventSubListener.subscribeToStreamOnlineEvents(CHANNEL.id, (event) => {
-    const response = `${event.broadcasterDisplayName} just came online!`;
+  await eventSubListener.onStreamOnline(CHANNEL.id, (event) => {
+    const response = `/me ${event.broadcasterDisplayName} just came online!`;
     sirenachanBot.say(CHANNEL.name, response);
 
     chatterList.clear();
   });
 
   await sirenachanBot.connect();
-  await eventSubListener.listen();
+  await eventSubListener.start();
 }
 
 main();
