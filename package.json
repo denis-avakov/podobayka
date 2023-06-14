@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "tsup src/index.ts --watch --onSuccess \"node dist/index.js\""
+  },
+  "devDependencies": {
+    "tsup": "^6.7.0"
+  }
+}
