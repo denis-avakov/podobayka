@@ -5,7 +5,13 @@
     "start": "node dist/index.js",
     "dev": "tsup src/index.ts --format esm,cjs --watch --onSuccess \"node dist/index.js\""
   },
+  "dependencies": {
+    "printable-characters": "^1.0.42",
+    "tmi.js": "^1.8.5"
+  },
   "devDependencies": {
+    "@types/node": "^20.3.1",
+    "@types/tmi.js": "^1.8.3",
     "tsup": "^6.7.0"
   }
 }
