@@ -3,7 +3,8 @@
   "type": "module",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "tsup"
+    "build": "tsup",
+    "dev": "tsup --watch --onSuccess \"node dist/index.js\""
   },
   "dependencies": {
     "printable-characters": "^1.0.42",
