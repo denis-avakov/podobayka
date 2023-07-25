@@ -1,3 +1,3 @@
 # Podobayka
 
-Monorepo to combine the bots that streamers may need
+Monorepo to combine the bots and tools that streamers may need

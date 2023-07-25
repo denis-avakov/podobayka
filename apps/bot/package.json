@@ -1,0 +1,13 @@
+{
+  "name": "@podobayka/bot",
+  "type": "module",
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "tsup",
+    "dev": "tsup --watch --onSuccess \"node dist/index.js\""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tsup": "^7.1.0"
+  }
+}

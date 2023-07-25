@@ -5,8 +5,6 @@
     "dbaeumer.vscode-eslint",
     "bradlc.vscode-tailwindcss",
     "irongeek.vscode-env",
-    "vivaxy.vscode-conventional-commits",
-    "usernamehw.errorlens",
-    "rhalaly.scope-to-this"
+    "vivaxy.vscode-conventional-commits"
   ]
 }
