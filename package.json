@@ -5,23 +5,12 @@
     "node": ">=v20.5.0"
   },
   "scripts": {
-    "build": "turbo build",
-    "start": "node ./apps/bot/dist/index.js",
-    "clean": "del-cli node_modules **/*/.turbo **/*/node_modules **/*/dist --force",
-    "clean:daemon": "turbo daemon clean",
-    "dev": "turbo dev --parallel",
-    "format": "prettier --write \"**/*.{js,cjs,mjs,ts,tsx,md,json}\" --ignore-path .gitignore",
-    "update-deps": "npx --yes npm-check-updates -x typescript --deep --interactive",
-    "lint": "manypkg check",
-    "lint:fix": "manypkg fix"
+    "update-deps": "npx --yes npm-check-updates -x typescript --deep --interactive"
   },
   "devDependencies": {
-    "@manypkg/cli": "^0.21.0",
     "@total-typescript/ts-reset": "^0.4.2",
     "@tsconfig/node18": "^18.2.0",
-    "del-cli": "^5.0.0",
     "prettier": "^3.0.0",
-    "turbo": "^1.10.12",
     "typescript": "^5.1.6"
   }
 }

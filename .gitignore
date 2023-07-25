@@ -4,20 +4,5 @@
 # node.js dependencies
 node_modules
 
-# debug logs
-npm-debug.log*
-.pnpm-debug.log*
-
-# turbo artifacts
-.turbo
-
-# build
-.next
-dist
-
 # environment variables
 .env
-.env*.local
-
-# typescript
-*.tsbuildinfo

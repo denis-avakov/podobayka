@@ -1,7 +1,6 @@
 {
   "folders": [
     { "name": "~", "path": "../" },
-    { "name": "bot", "path": "../apps/bot" },
-    { "name": "package/console", "path": "../packages/console" }
+    { "name": "bot", "path": "../packages/bot" }
   ]
 }
